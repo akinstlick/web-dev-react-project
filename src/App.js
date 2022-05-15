@@ -1,8 +1,9 @@
-import logo from './logo.svg';
 import './App.css';
 import Signup from './components/signup';
 import Login from './components/login';
-import { BrowserRouter as Router, Switch, Route, Routes } from "react-router-dom";
+import ForgotPassword from './components/forgotpassword'
+import Dashboard from './components/dashboard';
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 
 function App() {
@@ -10,8 +11,10 @@ function App() {
     <Router>
       <div>
         <Routes>
-        <Route exact path='/' element={<Login />}></Route>
-        <Route path='signup' element={<Signup />}></Route>
+          <Route exact path='/' element={<Login />} />
+          <Route path='signup' element={<Signup />} />
+          <Route path='forgot_password' element={<ForgotPassword />} />
+          <Route path='dashboard' element={<Dashboard />}/>
         </Routes>
       </div>
     </Router>

@@ -27,27 +27,10 @@ export function loginFunc(){
     if(!checkPassword(password)){
         alert('error: password must be at least 5 characters, including 1 number and 1 special character');
         return false;
-    }
-    var usertype = 1; //replace this with query database
-    //if user doesn't exist, use -1
-    switch(usertype){
-        case 1:
-            window.location.href = "student_dashboard.html";
-            document.cookie = "email:" + username;
-            break;
-        case 2:
-            window.location.href = "teacher_dashboard.html";
-            document.cookie = "email:" + username;
-            console.log('2');
-            break;
-        case 3:
-            window.location.href = "admin_dashboard.html";
-            document.cookie = "email:" + username;
-            console.log('3');
-            break;
-        default:
-            console.log('default case');
-            break;
+    } else {
+        //check that username and password are correct in here
+        document.location.href = "./dashboard";
+        document.cookie = "email:" + username;
     }
 }
 
