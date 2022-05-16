@@ -12,7 +12,7 @@ function Login() {
             <a href="./forgot_password">Forgot Password?</a><br/>
             <input type="submit" onClick={loginFunc}></input>
         </form>
-        <a href="./signup">Don't have an account? Sign Up</a>
+        <a href="signup">Don't have an account? Sign Up</a>
     </div>
   );
 }

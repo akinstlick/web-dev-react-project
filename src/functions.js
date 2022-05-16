@@ -29,8 +29,8 @@ export function loginFunc(){
         return false;
     } else {
         //check that username and password are correct in here
-        document.location.href = "./dashboard";
         document.cookie = "email:" + username;
+        window.location.assign('dashboard');
     }
 }
 
