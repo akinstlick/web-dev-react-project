@@ -11,6 +11,7 @@ import StudentAnnouncements from './components/student_announcements';
 import TeacherAnnouncements from './components/teacher_announcements';
 import StudentAssignments from './components/student_assignments';
 import TeacherAssignments from './components/teacher_assignments';
+import AdminSettings from './components/admin_settings';
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 
@@ -31,6 +32,7 @@ function App() {
           <Route path='teacherassignments' element={<TeacherAssignments />}/>
           <Route path='studentannouncements' element={<StudentAnnouncements />}/>
           <Route path='teacherannouncements' element={<TeacherAnnouncements />}/>
+          <Route path='adminsettings' element={<AdminSettings />}/>
         </Routes>
       </div>
     </Router>
