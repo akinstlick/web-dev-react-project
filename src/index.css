@@ -11,3 +11,56 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+#logindiv{
+  position: absolute;
+  align-items: center;
+  left:43%;
+}
+
+#login{
+  width: fit-content;
+  align-items: center;
+}
+
+input[type=text],input[type=password]{
+  padding: 12px 20px;
+}
+
+input[type=submit]{
+  background-color: red;
+  border: none;
+  color: white;
+  padding: 16px 32px;
+  text-decoration: none;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+
+#navigation{
+  position: absolute;
+  left: 10%;
+  top: 10%;
+  display: flex;
+  flex-direction: column;
+}
+
+a[href=account],a[href=dashboard],a[href=courses],a[href=login],a[href=admin_settings] {
+  font: bold 14px Arial;
+  text-decoration: none;
+  background-color: white;
+  color: #333333;
+  padding: 8px 12px 8px 12px;
+  border-top: 1px solid #CCCCCC;
+  border-right: 1px solid #333333;
+  border-bottom: 1px solid #333333;
+  border-left: 1px solid #CCCCCC;
+}
+
+a[href=account]:hover,a[href=dashboard]:hover,a[href=courses]:hover,a[href=login]:hover,a[href=admin_settings]:hover{
+  background-color: #CCCCCC;
+}
+
+#account{
+  text-align: center;
+}
