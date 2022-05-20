@@ -36,6 +36,7 @@ export function loginFunc(){
 
 export function signupFunc(){
     var name = document.querySelector("#name").value;
+    // TODO: check email is valid
     var email = document.querySelector("#email").value;
     var id = document.querySelector("#id").value;
     var pass1 = document.querySelector("#password1").value;
