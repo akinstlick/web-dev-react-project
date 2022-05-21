@@ -35,14 +35,15 @@ def addUser():
 # /checkUser: check if the email/password combo exists in users
 @app.route('/checkUser', methods=['POST'])
 def checkUser():
-    print("checking user")
     data = json.loads(request.data, strict = False)
     email = data['email']
     password = data['password']
-    print(email)
+
     query = f'''SELECT user_id FROM users WHERE email = '{email}' AND password = '{password}';'''
     conn = connect_to_db()
     users = conn.execute(query).fetchall()
+    conn.close()
+
     matches = len(users)
 
     if matches == 0:
@@ -55,6 +56,43 @@ def checkUser():
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
 
+@app.route('/changePassword', methods=['POST'])
+def changePassword():
+    print("checking security questions")
+    data = json.loads(request.data, strict = False)
+    email = data['email']
+    password = data['new_password']
+
+    response = 'success'
+    conn = connect_to_db()
+    questions = ['sq1', 'sq2', 'sq3']
+    db_questions = ['security_answer1', 'security_answer2', 'security_answer3']
+
+    for i, question in enumerate(questions):
+        ans = data[question]
+        query = f'''SELECT {db_questions[i]} FROM users WHERE email = '{email}';'''
+        print(query)
+        
+        db_ans = conn.execute(query).fetchall()
+        db_ans = db_ans[0][0]
+        if (ans != db_ans):
+            response = 'failure'
+            break
+    
+    if response == 'success':
+        print("changing password")
+        
+        query = f'''UPDATE users SET password = '{password}' WHERE email = '{email}';'''
+        print(query)
+
+        cur = conn.cursor()
+        cur.execute(query)
+        conn.commit()
+    
+    conn.close()
+    response = jsonify({"result": response})
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
 
 # THIS IS A TEST FUNCTION TODO: delete at the end
 @app.route('/data', methods=['GET', 'POST'])

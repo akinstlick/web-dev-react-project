@@ -42,9 +42,8 @@ export function loginFunc(){
                 let user_id = response['user_id'];
                 if (user_id == '0000') {
                     alert("user does not exist or password is incorrect");
-                    //TODO: route back to the login page
                 } else {
-                    alert("success"); //TODO: replace this with continuing to the dashboard
+                    alert("success");
                     document.cookie = "email:" + email;
                     window.location.assign('dashboard');
                 }
@@ -191,9 +190,14 @@ export function editProfile(){
 }
 
 export function changePassword(){
-    var oldpass = document.querySelector('#curr_password');
-    var pass1 = document.querySelector('#new_password');
-    var pass2 = document.querySelector('#confirm_password');
+    //var oldpass = document.querySelector('#curr_password');
+    var pass1 = document.querySelector('#new_password').value;
+    var pass2 = document.querySelector('#confirm_password').value;
+    var email = document.querySelector('#email').value;
+    var sq1 = document.querySelector('#sq1').value;
+    var sq2 = document.querySelector('#sq2').value;
+    var sq3 = document.querySelector('#sq3').value;
+
     if(pass1 !== pass2){
         alert('error: passwords must match');
         return false;
@@ -202,7 +206,35 @@ export function changePassword(){
         alert('error: password must be at least 5 characters, including 1 number and 1 special character');
         return false;
     }
-    //change database where password = old password
+    //TODO: change database where password = old password
+    // check the security question answers
+    const url = "http://localhost:5000/changePassword";
+    const data = JSON.stringify(
+                { email: email,
+                  sq1: sq1,
+                  sq2: sq2,
+                  sq3: sq3,
+                  new_password: pass1
+                });
+
+    alert(data);
+    const xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        alert("test")
+        if(xhttp.readyState == 4 && xhttp.status == 200) {
+            let response = JSON.parse(xhttp.responseText)['result'];
+            alert(response);
+            if (response == 'success') {
+                alert("password successfully changed");
+                //TODO: route to whatever comes next
+            } else {
+                alert("security questions are incorrect");
+            }
+        }
+    };
+    xhttp.open("POST", url, true);
+    xhttp.send(data);
+
 }
 
 export function changeSecurityQuestions(){
