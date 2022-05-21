@@ -48,6 +48,9 @@ export function signupFunc(){
         alert('error: please select student or teacher');
         return false;
     }
+    var q1 = "What was your first pet's name?";
+    var q2 = "What is your mother's maiden name?";
+    var q3 = "What are the last 4 digits of your social security?";
     var sq1 = document.querySelector('#sq1').value;
     var sq2 = document.querySelector('#sq2').value;
     var sq3 = document.querySelector('#sq3').value;
@@ -71,8 +74,61 @@ export function signupFunc(){
         alert('error: please enter id');
         return false;
     }
-    //add everything to database - or queue to admin thing whatever needs to happen here
+    //TODO add everything to database - or queue to admin thing whatever needs to happen here
+    addUser(name, email, id, pass1, s_t, q1, sq1, q2, sq2, q3, sq3);
+
     return true;
+}
+
+async function addUser(name, email, id, pwd, s_t, q1, sq1, q2, sq2, q3, sq3) {
+    const data = JSON.stringify(
+        { name: name, 
+          email: email,
+          university_id: id,
+          password: pwd,
+          account_type: s_t,
+          q1: q1, 
+          sq1: sq1,
+          q2: q2,
+          sq2: sq2,
+          q3: q3,
+          sq3: sq3
+        });
+    const url = "http://localhost:5000/addUser";
+    const xhttp = new XMLHttpRequest();
+
+    xhttp.open("POST", url, true);
+
+    xhttp.onreadystatechange = function() {
+        if(xhttp.readyState == 4 && xhttp.status == 200) {
+            alert(xhttp.responseText);
+        }
+    }
+    xhttp.send(data); 
+}
+
+async function testUser() {
+    /*let url = 'http://localhost:5000/data'
+    try {
+        let res = await fetch(url);
+        let data = await res.json();
+        data = JSON.parse(data);
+        alert(data);
+        console.log(data);
+        return data;
+    } catch (error) {
+        alert('error');
+        console.log(error);
+    }*/
+    const api = "http://localhost:5000/data";
+    const xhttp = new XMLHttpRequest();
+    xhttp.open("POST", api, true);
+    xhttp.onload = function() {
+        let response = JSON.parse(xhttp.responseText);
+        alert(response['Name']);
+        console.log(response);
+    }
+    xhttp.send();
 }
 
 export function populateAccount(){
