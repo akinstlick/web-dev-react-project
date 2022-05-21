@@ -1,7 +1,6 @@
-from flask import Flask, jsonify, request
-from flask import current_app, g
 import sqlite3
 import json
+from flask import Flask, jsonify, request
 
 app = Flask(__name__)
     
@@ -15,7 +14,7 @@ def index():
     return 'Index Page'
 
 # /addUser: add a new user to the Canvas system
-@app.route('/addUser', methods=['GET', 'POST'])
+@app.route('/addUser', methods=['POST'])
 def addUser():
     data = json.loads(request.data, strict = False)
 
@@ -25,7 +24,6 @@ def addUser():
     query += f''''{data['account_type']}', 1, "{data['q1']}", "{data['sq1']}", "{data['q2']}", "{data['sq2']}", '''      
     query += f'''"{data['q3']}", "{data['sq3']}");'''                  
     
-    print(query)
     conn = connect_to_db()
     cur = conn.cursor()
     cur.execute(query)
@@ -33,6 +31,30 @@ def addUser():
     conn.close()
 
     return 'success'
+
+# /checkUser: check if the email/password combo exists in users
+@app.route('/checkUser', methods=['POST'])
+def checkUser():
+    print("checking user")
+    data = json.loads(request.data, strict = False)
+    email = data['email']
+    password = data['password']
+    print(email)
+    query = f'''SELECT user_id FROM users WHERE email = '{email}' AND password = '{password}';'''
+    conn = connect_to_db()
+    users = conn.execute(query).fetchall()
+    matches = len(users)
+
+    if matches == 0:
+        print("no matching user")
+        response = jsonify({'user_id': 0000})
+    else:
+        print(f"user id: {users[0][0]}")
+        response = jsonify({'user_id': users[0][0]}) # user_id
+    
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
+
 
 # THIS IS A TEST FUNCTION TODO: delete at the end
 @app.route('/data', methods=['GET', 'POST'])

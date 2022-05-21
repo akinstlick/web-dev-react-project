@@ -20,23 +20,45 @@ export function checkPassword(pword){
 }
 
 
-
 export function loginFunc(){
-    var username = document.querySelector('#username').value;
+    var email = document.querySelector('#email').value;
     var password = document.querySelector('#password').value;
     if(!checkPassword(password)){
         alert('error: password must be at least 5 characters, including 1 number and 1 special character');
         return false;
     } else {
-        //check that username and password are correct in here
-        document.cookie = "email:" + username;
-        window.location.assign('dashboard');
+        const url = "http://localhost:5000/checkUser";
+        const data = JSON.stringify(
+            { email: email,
+              password: password
+            });
+
+        //WEIRD BUG: i have to enter a username/password twice because the first time it doesn't
+        //seem to successfully register the xmlrequest/api call. no clue what's going on
+        const xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if(xhttp.readyState == 4 && xhttp.status == 200) {
+                let response = JSON.parse(xhttp.responseText);
+                let user_id = response['user_id'];
+                if (user_id == '0000') {
+                    alert("user does not exist or password is incorrect");
+                    //TODO: route back to the login page
+                } else {
+                    alert("success"); //TODO: replace this with continuing to the dashboard
+                    document.cookie = "email:" + email;
+                    window.location.assign('dashboard');
+                }
+            }
+        };
+        xhttp.open("POST", url, true);
+        xhttp.send(data);
     }
 }
 
 export function signupFunc(){
     var name = document.querySelector("#name").value;
     // TODO: check email is valid
+    // TODO: if email already exists in database, route to forgot password
     var email = document.querySelector("#email").value;
     var id = document.querySelector("#id").value;
     var pass1 = document.querySelector("#password1").value;
@@ -74,12 +96,12 @@ export function signupFunc(){
         alert('error: please enter id');
         return false;
     }
-    //TODO add everything to database - or queue to admin thing whatever needs to happen here
-    addUser(name, email, id, pass1, s_t, q1, sq1, q2, sq2, q3, sq3);
 
+    addUser(name, email, id, pass1, s_t, q1, sq1, q2, sq2, q3, sq3);
     return true;
 }
 
+// addUser: sends a POST request to the backend to add a new user to the database
 async function addUser(name, email, id, pwd, s_t, q1, sq1, q2, sq2, q3, sq3) {
     const data = JSON.stringify(
         { name: name, 
@@ -104,9 +126,22 @@ async function addUser(name, email, id, pwd, s_t, q1, sq1, q2, sq2, q3, sq3) {
             alert(xhttp.responseText);
         }
     }
-    xhttp.send(data); 
+    xhttp.send(data);
 }
 
+function sendPostRequest(url, data) {
+    const xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if(xhttp.readyState == 4 && xhttp.status == 200) {
+            console.log(xhttp.responseText);
+        }
+    };
+    xhttp.open("POST", url, true);
+    xhttp.send(data);
+    return xhttp.responseText;
+}
+
+// THIS IS A TEST FUNCTION TODO: remove at the end
 async function testUser() {
     /*let url = 'http://localhost:5000/data'
     try {
