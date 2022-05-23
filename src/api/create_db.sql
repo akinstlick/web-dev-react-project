@@ -42,6 +42,7 @@ CREATE TABLE assignments (
     course_id integer NOT NULL,
     assignment_name character varying(500) NOT NULL,
     points integer NOT NULL,
+    due_date character varying(10) NOT NULL,
     assignment_desc character varying(1000) NOT NULL,
     PRIMARY KEY (assignment_id),
     FOREIGN KEY (course_id) REFERENCES courses(course_id)
@@ -51,9 +52,9 @@ CREATE TABLE assignments (
 
 -- Relation Table: teaches
 CREATE TABLE teaches (
-    university_id integer NOT NULL, 
+    user_id integer NOT NULL, 
     course_id integer NOT NULL,
-    FOREIGN KEY (university_id) REFERENCES users(university_id)
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
         ON UPDATE CASCADE
         ON DELETE CASCADE,
     FOREIGN KEY (course_id) REFERENCES courses(course_id)
@@ -63,9 +64,9 @@ CREATE TABLE teaches (
 
 -- Relation Table: takes
 CREATE TABLE takes (
-    university_id integer NOT NULL, 
+    user_id integer NOT NULL, 
     course_id integer NOT NULL,
-    FOREIGN KEY (university_id) REFERENCES users(university_id)
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
         ON UPDATE CASCADE
         ON DELETE CASCADE,
     FOREIGN KEY (course_id) REFERENCES courses(course_id)
@@ -75,8 +76,14 @@ CREATE TABLE takes (
 
 -- Relation Table: submissions
 CREATE TABLE submissions (
-    university_id integer NOT NULL,
+    user_id integer NOT NULL,
     assignment_id integer NOT NULL,
     submission_text character varying(1000) NOT NULL,
-    grade integer
+    grade integer,
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (assignment_id) REFERENCES assignments(assignment_id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
 );
