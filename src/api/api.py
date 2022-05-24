@@ -13,6 +13,11 @@ def connect_to_db():
 def index():
     return 'Index Page'
 
+#####################################################################################
+#####################################################################################
+## Login / Signup / Account Functions
+#####################################################################################
+#####################################################################################
 # /addUser: add a new user to the Canvas system
 @app.route('/addUser', methods=['POST'])
 def addUser():
@@ -96,7 +101,6 @@ def changePassword():
     response = jsonify({"result": response})
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
-
 
 # /changeSecurityQs: change the security questions for a user (identified by email) 
 # checks that the user correctly inputs the password first
@@ -209,15 +213,20 @@ def changeUserUniversityID():
 
     return changeUserInfo(email, 'university_id', new_id)
 
+#####################################################################################
+#####################################################################################
+## Admin Functions
+#####################################################################################
+#####################################################################################
 # /approveUser: set a user (identified by email) status to active (admin only)
-@app.route('approveUser', methods=['POST'])
+@app.route('/approveUser', methods=['POST'])
 def approveUser():
     data = json.loads(request.data, strict = False)
     email = data['email']
     return changeUserInfo(email, 'active', 1)
 
 # /deactivateUser: set a user (identified by email) status to inactive (admin only)
-@app.route('deactivateUser', methods=['POST'])
+@app.route('/deactivateUser', methods=['POST'])
 def deactivateUser():
     data = json.loads(request.data, strict = False)
     email = data['email']
@@ -278,23 +287,38 @@ def addUserToClass():
     conn.close()
     return 'success'
 
-# /getAllCourses: returns a list of all courses and info in JSON form 
+# /getAllCourses: returns a list of all courses and info in JSON form (admin only)
 @app.route('/getAllCourses', methods=['POST'])
 def getAllCourses():
+    # TODO: get all courses
+    query = f'''SELECT course_name FROM courses;'''
     pass
 
-# helper function to get user courses by user_id
-# returns a list of course_ids
-def getUserCoursesByUser(user_id):
+# /addCourse: add a new course to the database (admin only)
+@app.route('/addCourse', methods=['POST'])
+def addCourse():
+    # TODO: add course
+    data = json.loads(request.data, strict = False)
+    course_name = data['course_name']
+    course_desc = data['description']
+    capacity = data['capacity']
     conn = connect_to_db()
-    # determine the user's courses
-    query = f'''SELECT course_id FROM takes WHERE user_id = {user_id};'''
-    course_ids = []
-    for course in conn.execute(query).fetchall():
-        course_ids.append(course[0])
-    conn.close()
-    return course_ids
+    pass
 
+# /getAdminSummary: 
+# - # active students
+# - # active teachers
+# - # courses
+@app.route('/getAdminSummary', methods=['POST'])
+def getAdminSummary():
+    #TODO
+    pass
+
+#####################################################################################
+#####################################################################################
+## Dashboard Functions
+#####################################################################################
+#####################################################################################
 # helper function get user ID by user email
 def getUserIDFromEmail(email):
     conn = connect_to_db()
@@ -303,13 +327,38 @@ def getUserIDFromEmail(email):
     conn.close()
     return user_id
 
-@app.route('/getUserCourses', methods=['POST'])
-def getUserCourses():
+# helper function to get student courses by user_id from the relation "takes"
+# returns a list of course_ids
+def getStudentCoursesByUser(user_id):
+    conn = connect_to_db()
+    # determine the student's courses
+    query = f'''SELECT course_id FROM takes WHERE user_id = {user_id};'''
+    course_ids = []
+    for course in conn.execute(query).fetchall():
+        course_ids.append(course[0])
+    conn.close()
+    return course_ids
+
+# helper function to get teacher courses by user_id from the relation "teaches"
+# returns a list of course_ids
+def getTeacherCoursesByUser(user_id):
+    conn = connect_to_db()
+    # determine the teacher's courses
+    query = f'''SELECT course_id FROM teaches WHERE user_id = {user_id};'''
+    course_ids = []
+    for course in conn.execute(query).fetchall():
+        course_ids.append(course[0])
+    conn.close()
+    return course_ids
+
+# /getStudentCourses:
+@app.route('/getStudentCourses', methods=['POST'])
+def getStudentCourses():
     data = json.loads(request.data, strict = False)
     email = data['email']
     
     user_id = getUserIDFromEmail(email)
-    course_ids = getUserCoursesByUser(user_id)
+    course_ids = getStudentCoursesByUser(user_id)
     courses = []
 
     conn = connect_to_db()
@@ -322,6 +371,12 @@ def getUserCourses():
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
 
+# /getTeacherCourses:
+@app.route('/getTeacherCourses', methods=['POST'])
+def getTeacherCourses():
+    #TODO
+    pass
+
 # /getAllStudentAssignments: returns a list of all assignments and info in JSON form
 # for a given student, identified by email
 @app.route('/getAllStudentAssignments', methods = ['POST'])
@@ -331,7 +386,7 @@ def getAllStudentAssignments():
     assignment_list = []
 
     user_id = getUserIDFromEmail(email)
-    course_ids = getUserCoursesByUser(user_id)
+    course_ids = getStudentCoursesByUser(user_id)
 
     conn = connect_to_db()
     # gather the list of all assignments for all courses the student takes
@@ -354,9 +409,63 @@ def getAllStudentAssignments():
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
 
+# /getAllTeacherAssignments: returns a list of all assignments and info in JSON form
+# for a given teacher, identified by email
+@app.route('/getAllTeacherAssignments', methods = ['POST'])
+def getAllTeacherAssignments():
+    #TODO
+    pass
+
+#####################################################################################
+#####################################################################################
+## Courses Functions
+#####################################################################################
+#####################################################################################
+
+@app.route('/getAnnouncementsByCourse', methods=['POST'])
+def getStudentAnnouncements():
+    #TODO
+    pass
+
+# /addAnnouncement: add a new announcement for the given course (teacher only)
+@app.route('/addAnnouncement', methods=['POST'])
+def addAnnouncement():
+    #TODO
+    pass
+
+# /getStudentGrades: get the grades for all assignments for a given course and student
+@app.route('/getStudentGrades', methods=['POST'])
+def getStudentGrades():
+    #TODO
+    pass
+
+# /getAllStudentGrades: get the grades for all students in a course (teacher only)
+@app.route('/getAllStudentGrades', methods=['POST'])
+def getAllStudentGrades():
+    #TODO
+    pass
+
+# /addAssignment: add a new assignment for the given course (teacher only)
+@app.route('/addAssignment', methods=['POST'])
+def addAssignment():
+    #TODO
+    pass
+
+# /submitAssignment: create a submission for an existing assignment (student only)
+@app.route('/submitAssignment', methods=['POST'])
+def submitAssignment():
+    #TODO
+    pass
+
+# /addGradeForSubmission: add a grade for a student submission (teacher only)
+# the submission should already be in the table "submissions"
+@app.route('/addGradeForSubmission', methods=['POST'])
+def addGradeForSubmission():
+    #TODO
+    pass
 
 
-############################################################################
+#####################################################################################
 
 # THIS IS A TEST FUNCTION TODO: delete at the end
 @app.route('/data', methods=['GET', 'POST'])
