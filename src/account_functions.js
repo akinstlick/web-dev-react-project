@@ -44,7 +44,7 @@ export function loginFunc(){
                     alert("user does not exist or password is incorrect");
                 } else {
                     alert("success");
-                    document.cookie = "email:" + email;
+                    localStorage.setItem("user_id",user_id)
                     window.location.assign('dashboard');
                 }
             }
@@ -169,8 +169,27 @@ export function populateAccount(){
     var namediv = document.querySelector("#name");
     var emaildiv = document.querySelector("#email");
     var iddiv = document.querySelector("#student_id");
+    var user_id = localStorage.getItem("user_id");
+    console.log('populate account called! user_id: ' + user_id);
+    var data = JSON.stringify(
+        {
+            user_id: user_id
+        }
+    );
+    const api = "http://localhost:5000/getUserInfo";
+    const xhttp = new XMLHttpRequest();
+    xhttp.open("POST", api, true);
+    xhttp.onload = function() {
+        if(xhttp.readyState == 4 && xhttp.status == 200) {
+            let response = JSON.parse(xhttp.responseText);
+            console.log(response);
+            namediv.innerHTML = "Name: " + response['name'];
+            emaildiv.innerHTML = "Email: " + response['email'];
+            iddiv.innerHTML =  "Student ID: " + response['university_id'];
+        }
+    };
+    xhttp.send(data);
     // get name/email/id from database and show them in the divs
-    return true;
 }
 
 export function editProfile(){

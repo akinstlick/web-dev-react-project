@@ -45,7 +45,7 @@ input[type=submit]{
   flex-direction: column;
 }
 
-a[href=account],a[href=dashboard],a[href=courses],a[href=login],a[href=admin_settings] {
+a[href=account],a[href=dashboard],a[href=courses],a[href=\/],a[href=admin_settings] {
   font: bold 14px Arial;
   text-decoration: none;
   background-color: white;
@@ -57,7 +57,7 @@ a[href=account],a[href=dashboard],a[href=courses],a[href=login],a[href=admin_set
   border-left: 1px solid #CCCCCC;
 }
 
-a[href=account]:hover,a[href=dashboard]:hover,a[href=courses]:hover,a[href=login]:hover,a[href=admin_settings]:hover{
+a[href=account]:hover,a[href=dashboard]:hover,a[href=courses]:hover,a[href=\/]:hover,a[href=admin_settings]:hover{
   background-color: #CCCCCC;
 }
 
