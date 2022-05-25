@@ -1,4 +1,4 @@
-import { signupFunc } from "../functions";
+import { signupFunc } from "../account_functions";
 
 function Signup(){
 

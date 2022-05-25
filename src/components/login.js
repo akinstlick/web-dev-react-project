@@ -1,4 +1,4 @@
-import { loginFunc } from "../functions";
+import { loginFunc } from "../account_functions";
 
 function Login() {  
 

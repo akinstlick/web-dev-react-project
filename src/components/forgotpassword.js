@@ -1,4 +1,4 @@
-import { changePassword } from "../functions";
+import { changePassword } from "../account_functions";
 
 function ForgotPassword() {  
 
