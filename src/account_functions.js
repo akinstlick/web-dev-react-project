@@ -209,10 +209,8 @@ export function editProfile(){
 }
 
 export function changePassword(){
-    //var oldpass = document.querySelector('#curr_password');
     var pass1 = document.querySelector('#new_password').value;
     var pass2 = document.querySelector('#confirm_password').value;
-    var email = document.querySelector('#email').value;
     var sq1 = document.querySelector('#sq1').value;
     var sq2 = document.querySelector('#sq2').value;
     var sq3 = document.querySelector('#sq3').value;
@@ -228,21 +226,20 @@ export function changePassword(){
     //TODO: change database where password = old password
     // check the security question answers
     const url = "http://localhost:5000/changePassword";
+    var user_id = localStorage.getItem("user_id");
     const data = JSON.stringify(
-                { email: email,
+                { user_id: user_id,
                   sq1: sq1,
                   sq2: sq2,
                   sq3: sq3,
                   new_password: pass1
                 });
-
-    alert(data);
+    console.log('change password called');
     const xhttp = new XMLHttpRequest();
+    xhttp.open("POST", url, true);
     xhttp.onreadystatechange = function() {
-        alert("test")
         if(xhttp.readyState == 4 && xhttp.status == 200) {
             let response = JSON.parse(xhttp.responseText)['result'];
-            alert(response);
             if (response == 'success') {
                 alert("password successfully changed");
                 //TODO: route to whatever comes next
@@ -251,7 +248,6 @@ export function changePassword(){
             }
         }
     };
-    xhttp.open("POST", url, true);
     xhttp.send(data);
 
 }

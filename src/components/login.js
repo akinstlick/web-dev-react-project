@@ -9,7 +9,7 @@ function Login() {
         <form id="login" onSubmit={loginFunc}>
             <input type="text" id="email" placeholder="email"></input><br/><br/>
             <input type="password" id="password" placeholder="password"></input><br/><br/>
-            <input type="submit"></input><br/><br/>
+            <input type="submit" id="loginbutton"></input><br/><br/>
             <a href="./forgot_password">Forgot Password?</a><br/>
         </form>
         <a href="signup">Don't have an account? Sign Up</a>

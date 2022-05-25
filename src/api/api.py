@@ -68,7 +68,7 @@ def checkUser():
 def changePassword():
     print("checking security questions")
     data = json.loads(request.data, strict = False)
-    email = data['email']
+    user_id = data['user_id']
     password = data['new_password']
 
     response = 'success'
@@ -78,7 +78,7 @@ def changePassword():
 
     for i, question in enumerate(questions):
         ans = data[question]
-        query = f'''SELECT {db_questions[i]} FROM users WHERE email = '{email}';'''
+        query = f'''SELECT {db_questions[i]} FROM users WHERE user_id = {user_id};'''
         print(query)
         
         db_ans = conn.execute(query).fetchall()
@@ -90,7 +90,7 @@ def changePassword():
     if response == 'success':
         print("changing password")
         
-        query = f'''UPDATE users SET password = '{password}' WHERE email = '{email}';'''
+        query = f'''UPDATE users SET password = '{password}' WHERE user_id = {user_id};'''
         print(query)
 
         cur = conn.cursor()
