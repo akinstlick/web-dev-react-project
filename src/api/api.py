@@ -102,19 +102,19 @@ def changePassword():
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
 
-# /changeSecurityQs: change the security questions for a user (identified by email) 
+# /changeSecurityQs: change the security questions for a user (identified by user_id) 
 # checks that the user correctly inputs the password first
 @app.route('/changeSecurityQs', methods=['POST'])
 def changeSecurityQs():
     print("changeSecurityQs: checking password is correct")
     data = json.loads(request.data, strict = False)
-    email = data['email']
+    user_id = data['user_id']
     password = data['password']
     
     response = 'success'
     conn = connect_to_db()
 
-    query = f'''SELECT password FROM users WHERE email = '{email}';'''
+    query = f'''SELECT password FROM users WHERE user_id = {user_id};'''
     print(query)
     db_password = conn.execute(query).fetchall()[0][0]
     if(password != db_password):
@@ -126,11 +126,11 @@ def changeSecurityQs():
 
         for i, answer in enumerate(new_answers):
             new_ans = data[answer]
-            query = f'''UPDATE users SET {db_questions[i]} = '{new_ans}' WHERE email = '{email}';'''
-            print(query)
-            cur.execute(query)
-            conn.commit()
-    
+            if(new_ans != ''):
+                query = f'''UPDATE users SET {db_questions[i]} = '{new_ans}' WHERE user_id = {user_id};'''
+                print(query)
+                cur.execute(query)
+                conn.commit()
     conn.close()
     response = jsonify({"result": response})
     response.headers.add('Access-Control-Allow-Origin', '*')
@@ -166,14 +166,14 @@ def getUserInfo():
     return response
 
 # helper function for changing the fields of a USER in users
-def changeUserInfo(email, field, new_info):
+def changeUserInfo(user_id, field, new_info):
     print("changeUserInfo")
     response = 'success'
     conn = connect_to_db()
     cur = conn.cursor()
     
     try:
-        query = f'''UPDATE users SET {field} = '{new_info}' WHERE email = '{email}';'''
+        query = f'''UPDATE users SET {field} = '{new_info}' WHERE user_id = {user_id};'''
         print(query)
         cur.execute(query)
         conn.commit()
@@ -186,51 +186,50 @@ def changeUserInfo(email, field, new_info):
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
 
-# /changeUserName: change a user's name (identified by email) 
+# /changeUserName: change a user's name (identified by id) 
 @app.route('/changeUserName', methods=['POST'])
 def changeUserName():
     data = json.loads(request.data, strict = False)
-    email = data['email']
+    user_id = data['user_id']
     new_name = data['new_name']
+    return changeUserInfo(user_id, 'user_name', new_name)
 
-    return changeUserInfo(email, 'user_name', new_name)
-
-# /changeUserEmail: change a user's email (user identified by email) 
+# /changeUserEmail: change a user's email (user identified by id) 
 @app.route('/changeUserEmail', methods=['POST'])
 def changeUserEmail():
     data = json.loads(request.data, strict = False)
-    email = data['email']
+    user_id = data['user_id']
     new_email = data['new_email']
 
-    return changeUserInfo(email, 'email', new_email)
+    return changeUserInfo(user_id, 'email', new_email)
 
-# /changeUserUniversityID: change a user's university ID (identified by email)
+# /changeUserUniversityID: change a user's university ID (identified by id)
 @app.route('/changeUserUniversityID', methods=['POST'])
 def changeUserUniversityID():
     data = json.loads(request.data, strict = False)
-    email = data['email']
+    user_id = data['user_id']
     new_id = data['new_id']
 
-    return changeUserInfo(email, 'university_id', new_id)
+    return changeUserInfo(user_id, 'university_id', new_id)
 
 #####################################################################################
 #####################################################################################
 ## Admin Functions
 #####################################################################################
 #####################################################################################
-# /approveUser: set a user (identified by email) status to active (admin only)
+# /approveUser: set a user (identified by user_id) status to active (admin only)
 @app.route('/approveUser', methods=['POST'])
 def approveUser():
     data = json.loads(request.data, strict = False)
-    email = data['email']
-    return changeUserInfo(email, 'active', 1)
+    user_id = data['user_id']
+    return changeUserInfo(user_id, 'active', 1)
 
-# /deactivateUser: set a user (identified by email) status to inactive (admin only)
+# /deactivateUser: set a user (identified by user_id) status to inactive (admin only)
 @app.route('/deactivateUser', methods=['POST'])
 def deactivateUser():
     data = json.loads(request.data, strict = False)
-    email = data['email']
-    return changeUserInfo(email, 'active', 0)
+    user_id = data['user_id']
+    return changeUserInfo(user_id, 'active', 0)
 
 # /getAllUsers: returns a list of all users and their info in JSON form (admin only)
 @app.route('/getAllUsers', methods=['POST'])
@@ -255,16 +254,16 @@ def getAllUsers():
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
 
-# /addUserToClass: adds a user (identified by email) to class as either teacher or student (admin only)
+# /addUserToClass: adds a user (identified by user_id) to class as either teacher or student (admin only)
 @app.route('/addUserToClass', methods=['POST'])
 def addUserToClass():
     data = json.loads(request.data, strict = False)
-    email = data['email']
+    user_id = data['user_id']
     course = data['course_name']
     conn = connect_to_db()
 
     # determine the account type and user_id of the user
-    query = f'''SELECT user_id, account_type FROM users WHERE email = '{email}';'''
+    query = f'''SELECT user_id, account_type FROM users WHERE user_id = {user_id};'''
     user = conn.execute(query).fetchall()[0]
     user_id = user[0]
     account_type = user[1]
@@ -319,13 +318,6 @@ def getAdminSummary():
 ## Dashboard Functions
 #####################################################################################
 #####################################################################################
-# helper function get user ID by user email
-def getUserIDFromEmail(email):
-    conn = connect_to_db()
-    query = f'''SELECT user_id FROM users WHERE email = '{email}';'''
-    user_id = conn.execute(query).fetchall()[0][0]
-    conn.close()
-    return user_id
 
 # helper function to get student courses by user_id from the relation "takes"
 # returns a list of course_ids
@@ -355,9 +347,8 @@ def getTeacherCoursesByUser(user_id):
 @app.route('/getStudentCourses', methods=['POST'])
 def getStudentCourses():
     data = json.loads(request.data, strict = False)
-    email = data['email']
+    user_id = data['user_id']
     
-    user_id = getUserIDFromEmail(email)
     course_ids = getStudentCoursesByUser(user_id)
     courses = []
 
@@ -382,10 +373,9 @@ def getTeacherCourses():
 @app.route('/getAllStudentAssignments', methods = ['POST'])
 def getAllStudentAssignments():
     data = json.loads(request.data, strict = False)
-    email = data['email']
+    user_id = data['user_id']
     assignment_list = []
 
-    user_id = getUserIDFromEmail(email)
     course_ids = getStudentCoursesByUser(user_id)
 
     conn = connect_to_db()

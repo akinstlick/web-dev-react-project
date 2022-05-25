@@ -130,12 +130,12 @@ async function addUser(name, email, id, pwd, s_t, q1, sq1, q2, sq2, q3, sq3) {
 
 function sendPostRequest(url, data) {
     const xhttp = new XMLHttpRequest();
+    xhttp.open("POST", url, true);
     xhttp.onreadystatechange = function() {
         if(xhttp.readyState == 4 && xhttp.status == 200) {
             console.log(xhttp.responseText);
         }
     };
-    xhttp.open("POST", url, true);
     xhttp.send(data);
     return xhttp.responseText;
 }
@@ -170,7 +170,6 @@ export function populateAccount(){
     var emaildiv = document.querySelector("#email");
     var iddiv = document.querySelector("#student_id");
     var user_id = localStorage.getItem("user_id");
-    console.log('populate account called! user_id: ' + user_id);
     var data = JSON.stringify(
         {
             user_id: user_id
@@ -182,7 +181,6 @@ export function populateAccount(){
     xhttp.onload = function() {
         if(xhttp.readyState == 4 && xhttp.status == 200) {
             let response = JSON.parse(xhttp.responseText);
-            console.log(response);
             namediv.innerHTML = "Name: " + response['name'];
             emaildiv.innerHTML = "Email: " + response['email'];
             iddiv.innerHTML =  "Student ID: " + response['university_id'];
@@ -193,18 +191,35 @@ export function populateAccount(){
 }
 
 export function editProfile(){
+    console.log('editprofile called');
+    var user_id = localStorage.getItem('user_id');
     var newname = document.querySelector('#name_field').value;
     var newemail = document.querySelector('#email_field').value;
     var newid = document.querySelector('#id_field').value;
     //update values in database - do them individually
     if(newname !== ""){
-        //update
+        var nameurl = "http://localhost:5000/changeUserName";
+        var namedata = JSON.stringify({
+            user_id: user_id,
+            new_name: newname
+        });
+        sendPostRequest(nameurl,namedata);
     }
     if(newemail !== ""){
-        //update
+        var emailurl = "http://localhost:5000/changeUserEmail";
+        var emaildata = JSON.stringify({
+            user_id: user_id,
+            new_email: newemail
+        });
+        sendPostRequest(emailurl,emaildata);
     }
     if(newid !== ""){
-        //update
+        var idurl = "http://localhost:5000/changeUserUniversityID";
+        var iddata = JSON.stringify({
+            user_id: user_id,
+            new_id: newid
+        });
+        sendPostRequest(idurl,iddata);
     }
 }
 
@@ -235,27 +250,30 @@ export function changePassword(){
                   new_password: pass1
                 });
     console.log('change password called');
-    const xhttp = new XMLHttpRequest();
-    xhttp.open("POST", url, true);
-    xhttp.onreadystatechange = function() {
-        if(xhttp.readyState == 4 && xhttp.status == 200) {
-            let response = JSON.parse(xhttp.responseText)['result'];
-            if (response == 'success') {
-                alert("password successfully changed");
-                //TODO: route to whatever comes next
-            } else {
-                alert("security questions are incorrect");
-            }
-        }
-    };
-    xhttp.send(data);
+    sendPostRequest(url,data);
 
 }
 
 export function changeSecurityQuestions(){
-    var pass = document.querySelector('#verify_password');
+    console.log('changeSQs called');
+    var user_id = localStorage.getItem('user_id');
+    var pass = document.querySelector('#verify_password').value;
     var sq1 = document.querySelector('#change_sq1').value;
     var sq2 = document.querySelector('#change_sq2').value;
     var sq3 = document.querySelector('#change_sq3').value;
-    //change in database
+    var data = JSON.stringify({
+        user_id: user_id,
+        password: pass,
+        new_sq1: sq1,
+        new_sq2: sq2,
+        new_sq3: sq3
+    });
+    var url = "http://localhost:5000/changeSecurityQs";
+    let response = JSON.parse(sendPostRequest(url,data));
+    let result = response['result'];
+    if(result == 'success'){
+        alert('success');
+    } else {
+        alert('failure');
+    }
 }

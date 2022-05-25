@@ -1,10 +1,9 @@
 import { useEffect } from "react";
-import { changePassword, populateAccount } from "../account_functions";
+import { changePassword, changeSecurityQuestions, editProfile, populateAccount } from "../account_functions";
 import Sidebar from "./sidebar"
 
 function Account() {
     useEffect(() => {
-        console.log('here');
         populateAccount();
     });
 
@@ -19,12 +18,12 @@ function Account() {
                 <br /> <br />
                 <span id="student_id"></span>
             </div>
-            <div id="change_account" style={{ display: 'none' }}>
+            <form id="change_account" style={{ display: 'none' }} onSubmit={editProfile}>
                 Name <input type="text" id="name_field"></input><br />
                 Email <input type="text" id="email_field"></input><br />
                 ID <input type="text" id="id_field"></input><br />
                     <input type="submit"></input> <br />
-            </div>
+            </form>
             <input type="button" value="Edit Profile" onClick={function () { document.getElementById("change_account").style.display = 'block' }}></input>
             <br />
             <br />
@@ -52,8 +51,9 @@ function Account() {
             </form>
             <br /> <br />
             <div id="security_question_answers">
-                <span>Change Security Question Answers</span>
-                <form id="change_answers">
+                <input type="button" value="Change Security Question Answers" onClick={function () { document.getElementById("change_answers").style.display = 'block' }}></input>
+                <br/> <br />
+                <form id="change_answers" onSubmit={changeSecurityQuestions} style={{display: 'none'}}>
                     Enter your password: <input type="password" id="verify_password"></input>
                     <br /> <br />
                     Security Answer 1: <input type="text" id="change_sq1"></input>
