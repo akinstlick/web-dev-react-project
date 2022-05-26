@@ -258,7 +258,7 @@ def deactivateUser():
 @app.route('/getAllUsers', methods=['POST'])
 def getAllUsers():
     user_list = []
-    query = f'''SELECT user_name, email, university_id, active FROM users;'''
+    query = f'''SELECT user_id,user_name, email, university_id, active FROM users;'''
     
     conn = connect_to_db()
     users = conn.execute(query).fetchall()
@@ -266,14 +266,16 @@ def getAllUsers():
 
     for user in users:
         userdict = {
-            'user_name': user[0],
-            'email': user[1],
-            'university_id': user[2],
-            'active': user[3]
+            'user_id': user[0],
+            'user_name': user[1],
+            'email': user[2],
+            'university_id': user[3],
+            'active': user[4]
         }
         user_list.append(userdict)
 
     response = json.dumps(user_list)
+    response = jsonify(response)
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
 

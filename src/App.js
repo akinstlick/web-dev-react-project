@@ -32,7 +32,7 @@ function App() {
           <Route path='teacherassignments' element={<TeacherAssignments />}/>
           <Route path='studentannouncements' element={<StudentAnnouncements />}/>
           <Route path='teacherannouncements' element={<TeacherAnnouncements />}/>
-          <Route path='adminsettings' element={<AdminSettings />}/>
+          <Route path='admin_settings' element={<AdminSettings />}/>
         </Routes>
       </div>
     </Router>
