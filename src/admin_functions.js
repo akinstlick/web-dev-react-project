@@ -1,4 +1,4 @@
-import * as ReactDOM from 'react-dom';
+import * as ReactDOM from 'react-dom/client';
 
 async function sendPostRequest(url, data) {
     return new Promise(function(resolve,reject) {
@@ -49,16 +49,49 @@ export function UserList(){
         var userlist = [];
         for(var i = 0; i < v.length; i++){
             var user = v[i];
-            var childdiv = <div key={user['user_id']}>
-                <span>name: {user['user_name']}</span>
-                <span> email: {user['email']}</span>
-                <span> id: {user['university_id']}</span>
-                <span> active: {user['active']}</span>
-            </div>
+            var childdiv
+            if(user['active'] == '0'){
+                childdiv =  <div key={user['user_id']}>
+                                    <span>name: {user['user_name']}</span>
+                                    <span> email: {user['email']}</span>
+                                    <span> id: {user['university_id']}</span>
+                                    <span> active: {user['active']}  </span>
+                                    <button onClick={approveUser(user['user_id'])}>approve</button>
+                                    <button onClick={rejectUser(user['user_id'])}>reject</button>
+                                </div>
+            } else {
+                childdiv =  <div key={user['user_id']}>
+                                    <span>name: {user['user_name']}</span>
+                                    <span> email: {user['email']}</span>
+                                    <span> id: {user['university_id']}</span>
+                                    <span> active: {user['active']}  </span>
+                                    <button onClick={rejectUser(user['user_id'])}>deactivate</button>
+                                </div>
+            }
             userlist.push(childdiv)
         }
         const userroot = ReactDOM.createRoot(document.querySelector("#userlist"));
         const element = <div>{userlist}</div>;
         userroot.render(element);
     });
+}
+
+function approveUser(userid){
+    const api = "http://localhost:5000/approveUser";
+    var data = JSON.stringify(
+        {
+            user_id: userid
+        }
+    );
+    sendPostRequest(api,data);
+}
+
+function rejectUser(userid){
+    const api = "http://localhost:5000/deactivateUser";
+    var data = JSON.stringify(
+        {
+            user_id: userid
+        }
+    );
+    sendPostRequest(api,data);
 }
