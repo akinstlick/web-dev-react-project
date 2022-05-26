@@ -44,7 +44,7 @@ export function loginFunc(){
                     alert("user does not exist or password is incorrect");
                 } else {
                     alert("success");
-                    localStorage.setItem("user_id",user_id)
+                    localStorage.setItem("user_id",user_id);
                     window.location.assign('dashboard');
                 }
             }

@@ -1,9 +1,9 @@
-
+import { getUserType } from "../admin_functions";
 
 function Sidebar(){
-    var accounttype = 1;
-    switch(accounttype){
-        case 1:
+    var accounttype = getUserType;
+    switch(accounttype()){
+        case 'student':
             return (
                 <div id="navigation">
                     <a href="account"><i className="glyphicon glyphicon-user"></i> My Account</a><br/>
@@ -12,7 +12,7 @@ function Sidebar(){
                     <a href="/"><i className="glyphicon glyphicon-log-out"></i> Logout</a>
                 </div>
             )
-        case 2:
+        case 'teacher':
             return (
                 <div id="navigation">
                     <a href="account"><i className="glyphicon glyphicon-user"></i> My Account</a><br/>
@@ -21,7 +21,7 @@ function Sidebar(){
                     <a href="/"><i className="glyphicon glyphicon-log-out"></i> Logout</a>
                 </div>
             )
-        case 3:
+        case "admin":
             return (
                 <div id="navigation">
                     <a href="account"><i className="glyphicon glyphicon-user"></i> My Account</a><br/>

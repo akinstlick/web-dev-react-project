@@ -217,6 +217,29 @@ def changeUserUniversityID():
 ## Admin Functions
 #####################################################################################
 #####################################################################################
+
+# /userType: return the user type associated with the given user_id
+@app.route('/userType', methods=['POST'])
+def userType():
+    print('getting user type')
+    data = json.loads(request.data, strict = False)
+    user_id = data['user_id']
+
+    conn = connect_to_db()
+
+    query = f'''SELECT account_type FROM users WHERE user_id = {user_id};'''
+    accounttype = conn.execute(query).fetchall()[0][0]
+
+    print(f'{accounttype}')
+
+    response = jsonify({
+        "account_type" : accounttype
+    })
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    conn.close()
+    return response
+
+
 # /approveUser: set a user (identified by user_id) status to active (admin only)
 @app.route('/approveUser', methods=['POST'])
 def approveUser():

@@ -1,25 +1,29 @@
+import { getUserType } from "../admin_functions";
 import Sidebar from "./sidebar";
 
 
 function Dashboard(){
-    var accounttype = 1;
-    switch(accounttype){
-        case 1:
+    var accounttype = getUserType;
+    switch(accounttype()){
+        case "student":
             return (
             <div>
                 <Sidebar />
+                student
             </div>
         )
-        case 2:
+        case "teacher":
             return (
             <div>
                 <Sidebar />
+                teacher
             </div>
         )
-        case 3:
+        case "admin":
             return (
             <div>
                 <Sidebar />
+                admin
             </div>
         )
         default:
