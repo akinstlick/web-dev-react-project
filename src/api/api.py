@@ -333,8 +333,25 @@ def addCourse():
 # - # courses
 @app.route('/getAdminSummary', methods=['POST'])
 def getAdminSummary():
-    #TODO
-    pass
+    print('getting admin summary')
+
+    conn = connect_to_db()
+
+    studentquery = f'''SELECT count(*) FROM users WHERE account_type = 'student';'''
+    numstudents = conn.execute(studentquery).fetchall()[0][0]
+    coursequery = f'''SELECT count(*) FROM courses;'''
+    numcourses = conn.execute(coursequery).fetchall()[0][0]
+    teacherquery = f'''SELECT count(*) FROM users WHERE account_type = 'teacher';'''
+    numteachers = conn.execute(teacherquery).fetchall()[0][0]
+
+    response = jsonify({
+        "num_students" : numstudents,
+        "num_courses" : numcourses,
+        "num_teachers" : numteachers
+    })
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    conn.close()
+    return response
 
 #####################################################################################
 #####################################################################################

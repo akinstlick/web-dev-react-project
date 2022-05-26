@@ -26,3 +26,16 @@ export function getUserType() {
         localStorage.setItem('account_type',accounttype);
     });
 }
+
+export function populateAdminDash(){
+    var numstudents = document.querySelector('#numstudents');
+    var numcourses = document.querySelector('#numcourses');
+    var numteachers = document.querySelector('#numteachers');
+    const api = "http://localhost:5000/getAdminSummary";
+    sendPostRequest(api,'').then(function(v){
+        v = JSON.parse(v);
+        numstudents.innerHTML = "Number of Students: " + v['num_students'];
+        numcourses.innerHTML = "Number of Courses: " + v['num_courses'];
+        numteachers.innerHTML = "Number of Teachers: " + v['num_teachers'];
+    });   
+}

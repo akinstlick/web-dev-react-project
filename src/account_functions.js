@@ -46,12 +46,12 @@ export function loginFunc(){
                     alert("success");
                     localStorage.setItem("user_id",user_id);
                     window.location.assign('dashboard');
-                }
-            }
+                };
+            };
         };
         xhttp.open("POST", url, true);
         xhttp.send(data);
-    }
+    };
 }
 
 export function signupFunc(){

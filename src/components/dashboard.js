@@ -1,11 +1,12 @@
 import { useEffect } from "react";
-import { getUserType } from "../admin_functions";
+import { getUserType, populateAdminDash } from "../admin_functions";
 import Sidebar from "./sidebar";
 
 
 function Dashboard(){
     useEffect(() => {
         getUserType();
+        populateAdminDash();
     });
     var accounttype = localStorage.getItem('account_type');
     switch(accounttype){
@@ -27,7 +28,11 @@ function Dashboard(){
             return (
             <div>
                 <Sidebar />
-                admin
+                <div id="admindashboard">
+                    <div id="numstudents"></div>
+                    <div id="numcourses"></div>
+                    <div id="numteachers"></div>
+                </div>
             </div>
         )
         default:
