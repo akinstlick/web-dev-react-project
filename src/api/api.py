@@ -62,7 +62,7 @@ def checkUser():
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
 
-# /changePassword: change the password for a user (identified by email) 
+# /changePassword: change the password for a user (identified by user_id) 
 # checks that the user correctly answers the security questions first
 @app.route('/changePassword', methods=['POST'])
 def changePassword():
@@ -357,7 +357,6 @@ def getAllCourses():
 # /addCourse: add a new course to the database (admin only)
 @app.route('/addCourse', methods=['POST'])
 def addCourse():
-   
     data = json.loads(request.data, strict = False)
     course_name = data['course_name']
     course_desc = data['description']
@@ -365,6 +364,8 @@ def addCourse():
 
     query = f'''INSERT INTO courses (course_name, course_desc, capacity) VALUES '''
     query += f'''('{course_name}', '{course_desc}', {capacity});'''
+
+    print(query)
     
     conn = connect_to_db()
     cur = conn.cursor()
@@ -452,11 +453,25 @@ def getStudentCourses():
 # /getTeacherCourses:
 @app.route('/getTeacherCourses', methods=['POST'])
 def getTeacherCourses():
-    #TODO
-    pass
+    data = json.loads(request.data, strict = False)
+    user_id = data['user_id']
+
+    course_ids = getTeacherCoursesByUser(user_id)
+    courses = []
+
+    conn = connect_to_db()
+    for course_id in course_ids:
+        query = f'''SELECT course_name FROM courses WHERE course_id = {course_id};'''
+        courses.append(conn.execute(query).fetchall()[0][0])
+    
+    conn.close()
+    response = json.dumps(courses)
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
+
 
 # /getAllStudentAssignments: returns a list of all assignments and info in JSON form
-# for a given student, identified by email
+# for a given student, identified by user_id
 @app.route('/getAllStudentAssignments', methods = ['POST'])
 def getAllStudentAssignments():
     data = json.loads(request.data, strict = False)
@@ -474,10 +489,10 @@ def getAllStudentAssignments():
         assignments = conn.execute(query).fetchall()
         for assignment in assignments:
             assignmentdict = {
-                'assignment_name': assignments[0],
+                'assignment_name': assignment[0],
                 'course_name': course_name,
-                'points': assignments[1],
-                'due_date': assignments[2]
+                'points': assignment[1],
+                'due_date': assignment[2]
             }
             assignment_list.append(assignmentdict)
 
@@ -487,11 +502,34 @@ def getAllStudentAssignments():
     return response
 
 # /getAllTeacherAssignments: returns a list of all assignments and info in JSON form
-# for a given teacher, identified by email
+# for a given teacher, identified by user_id
 @app.route('/getAllTeacherAssignments', methods = ['POST'])
 def getAllTeacherAssignments():
-    #TODO
-    pass
+    data = json.loads(request.data, strict = False)
+    user_id = data['user_id']
+    assignment_list = []
+
+    course_ids = getTeacherCoursesByUser(user_id)
+    conn = connect_to_db()
+    for course_id in course_ids:
+        query = f'''SELECT course_name FROM courses WHERE course_id = {course_id};'''
+        course_name = conn.execute(query).fetchall()[0][0]
+        query = f'''SELECT assignment_name, points, due_date FROM assignments WHERE course_id = {course_id};'''
+        assignments = conn.execute(query).fetchall()
+        for assignment in assignments:
+            assignmentdict = {
+                'assignment_name': assignment[0],
+                'course_name': course_name,
+                'points': assignment[1],
+                'due_date': assignment[2]
+            }
+            assignment_list.append(assignmentdict)
+
+    conn.close()
+    response = json.dumps(assignment_list)
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
+
 
 #####################################################################################
 #####################################################################################
@@ -508,7 +546,23 @@ def getStudentAnnouncements():
 @app.route('/addAnnouncement', methods=['POST'])
 def addAnnouncement():
     #TODO
-    pass
+    data = json.loads(request.data, strict = False)
+    course_name = data['course_name']
+    course_desc = data['description']
+    capacity = data['capacity']
+
+    query = f'''INSERT INTO courses (course_name, course_desc, capacity) VALUES '''
+    query += f'''('{course_name}', '{course_desc}', {capacity});'''
+
+    print(query)
+    
+    conn = connect_to_db()
+    cur = conn.cursor()
+    cur.execute(query)
+    conn.commit()
+    conn.close()
+
+    return 'success'
 
 # /getStudentGrades: get the grades for all assignments for a given course and student
 @app.route('/getStudentGrades', methods=['POST'])
