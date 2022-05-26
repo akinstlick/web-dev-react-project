@@ -1,8 +1,6 @@
-import { getUserType } from "../admin_functions";
-
 function Sidebar(){
-    var accounttype = getUserType;
-    switch(accounttype()){
+    var accounttype = localStorage.getItem('account_type');
+    switch(accounttype){
         case 'student':
             return (
                 <div id="navigation">

@@ -1,10 +1,14 @@
+import { useEffect } from "react";
 import { getUserType } from "../admin_functions";
 import Sidebar from "./sidebar";
 
 
 function Dashboard(){
-    var accounttype = getUserType;
-    switch(accounttype()){
+    useEffect(() => {
+        getUserType();
+    });
+    var accounttype = localStorage.getItem('account_type');
+    switch(accounttype){
         case "student":
             return (
             <div>
