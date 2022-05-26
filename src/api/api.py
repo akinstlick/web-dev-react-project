@@ -166,8 +166,8 @@ def getUserInfo():
     return response
 
 # helper function for changing the fields of a USER in users
-def changeUserInfo(user_id, field, new_info):
-    print("changeUserInfo")
+def changeUserStrInfo(user_id, field, new_info):
+    print("changeUserStrInfo")
     response = 'success'
     conn = connect_to_db()
     cur = conn.cursor()
@@ -178,7 +178,29 @@ def changeUserInfo(user_id, field, new_info):
         cur.execute(query)
         conn.commit()
     except Exception as e:
-        print(f"failed changeUserInfo: {e}")
+        print(f"failed changeUserStrInfo: {e}")
+        response = 'failure'
+    
+    conn.close()
+    response = jsonify({"result": response})
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
+
+
+# helper function for changing integer fields of the user table
+def changeUserIntInfo(user_id, field, new_status):
+    print("changeUserIntInfo")
+    response = 'success'
+    conn = connect_to_db()
+    cur = conn.cursor()
+    
+    try:
+        query = f'''UPDATE users SET {field} = {new_status} WHERE user_id = {user_id};'''
+        print(query)
+        cur.execute(query)
+        conn.commit()
+    except Exception as e:
+        print(f"failed changeUserIntInfo: {e}")
         response = 'failure'
     
     conn.close()
@@ -192,7 +214,7 @@ def changeUserName():
     data = json.loads(request.data, strict = False)
     user_id = data['user_id']
     new_name = data['new_name']
-    return changeUserInfo(user_id, 'user_name', new_name)
+    return changeUserStrInfo(user_id, 'user_name', new_name)
 
 # /changeUserEmail: change a user's email (user identified by id) 
 @app.route('/changeUserEmail', methods=['POST'])
@@ -201,7 +223,7 @@ def changeUserEmail():
     user_id = data['user_id']
     new_email = data['new_email']
 
-    return changeUserInfo(user_id, 'email', new_email)
+    return changeUserStrInfo(user_id, 'email', new_email)
 
 # /changeUserUniversityID: change a user's university ID (identified by id)
 @app.route('/changeUserUniversityID', methods=['POST'])
@@ -210,7 +232,7 @@ def changeUserUniversityID():
     user_id = data['user_id']
     new_id = data['new_id']
 
-    return changeUserInfo(user_id, 'university_id', new_id)
+    return changeUserStrInfo(user_id, 'university_id', new_id)
 
 #####################################################################################
 #####################################################################################
@@ -245,14 +267,14 @@ def userType():
 def approveUser():
     data = json.loads(request.data, strict = False)
     user_id = data['user_id']
-    return changeUserInfo(user_id, 'active', 1)
+    return changeUserIntInfo(user_id, 'active', 1)
 
 # /deactivateUser: set a user (identified by user_id) status to inactive (admin only)
 @app.route('/deactivateUser', methods=['POST'])
 def deactivateUser():
     data = json.loads(request.data, strict = False)
     user_id = data['user_id']
-    return changeUserInfo(user_id, 'active', 0)
+    return changeUserIntInfo(user_id, 'active', 0)
 
 # /getAllUsers: returns a list of all users and their info in JSON form (admin only)
 @app.route('/getAllUsers', methods=['POST'])
@@ -314,20 +336,43 @@ def addUserToClass():
 # /getAllCourses: returns a list of all courses and info in JSON form (admin only)
 @app.route('/getAllCourses', methods=['POST'])
 def getAllCourses():
-    # TODO: get all courses
+    course_list = []
     query = f'''SELECT course_name FROM courses;'''
-    pass
+ 
+    conn = connect_to_db()
+    courses = conn.execute(query).fetchall()
+    conn.close()
+
+    for course in courses:
+        coursedict = {
+            'course_name': course[0]
+        }
+        course_list.append(coursedict)
+
+    response = json.dumps(course_list)
+    response = jsonify(response)
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
 
 # /addCourse: add a new course to the database (admin only)
 @app.route('/addCourse', methods=['POST'])
 def addCourse():
-    # TODO: add course
+   
     data = json.loads(request.data, strict = False)
     course_name = data['course_name']
     course_desc = data['description']
     capacity = data['capacity']
+
+    query = f'''INSERT INTO courses (course_name, course_desc, capacity) VALUES '''
+    query += f'''('{course_name}', '{course_desc}', {capacity});'''
+    
     conn = connect_to_db()
-    pass
+    cur = conn.cursor()
+    cur.execute(query)
+    conn.commit()
+    conn.close()
+
+    return 'success'
 
 # /getAdminSummary: 
 # - # active students
