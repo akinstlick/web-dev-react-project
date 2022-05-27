@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { getUserType } from "../admin_functions";
+import Sidebar from "./sidebar";
 
 
 function Courses(){
@@ -11,6 +12,7 @@ function Courses(){
         case "student":
             return (
                 <div id="courses">
+                    <Sidebar />
                     <h2> Your Courses </h2>
                     <div id = "course_list">
                         <ul>
@@ -31,6 +33,7 @@ function Courses(){
         case 'teacher':
             return (
                 <div id="courses">
+                    <Sidebar />
                     <h2> Your Courses </h2>
                     <div id = "course_list">
                         <ul>
@@ -51,6 +54,7 @@ function Courses(){
         case 'admin':
             return (
                 <div id="courses">
+                    <Sidebar />
                     <h2> All Courses </h2> 
                     <div id = "all_course_list">
                         <ul>
@@ -61,22 +65,22 @@ function Courses(){
                             <li> ENGL101 </li>
                         </ul>
                     </div>
-                    <input type = "button" value = "Add a course"></input>
+                    <input type = "button" value = "Add a course" onClick={function (){document.querySelector('#add_course').style.display = 'block'}}></input>
                     <br />
-                    <form id = "add_course">
-                        <label for = "course_name"> Course Name: </label>
-                        <input type = "text" id = "course_name"></input><br />
-                        <label for = "desc"> Description: </label>
-                        <input type = "text" id = "desc"></input><br />
-                        <label for = "capacity"> Capacity: </label>
-                        <input type = "text" id = "capacity"> </input><br />
-                        <label for = "teacher"> Assigned Teacher: </label>
+                    <form id = "add_course" style={{display:'none'}}>
+                        <label htmlFor = "course_name"> Course Name: </label>
+                        <input type={'text'} id = "course_name"></input><br />
+                        <label htmlFor = "desc"> Description: </label>
+                        <input type = {'text'} id = "desc"></input><br />
+                        <label htmlFor = "capacity"> Capacity: </label>
+                        <input type = {'text'} id = "capacity"></input><br />
+                        <label htmlFor = "teacher"> Assigned Teacher: </label>
                         <select id = "teacher">
                             <option value = "Dr. A"> Dr. A</option>
                             <option value = "Professor B"> Professor B </option>
                         </select>
                         <br />
-                        <input type = "submit"> </input>
+                        <input type = "submit"></input>
                     </form>
                 </div>
             )
