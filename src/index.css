@@ -63,4 +63,7 @@ a[href=account]:hover,a[href=dashboard]:hover,a[href=courses]:hover,a[href=\/]:h
 
 #account{
   text-align: center;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
 }

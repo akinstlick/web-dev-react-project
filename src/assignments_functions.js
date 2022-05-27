@@ -116,3 +116,29 @@ export function AssignmentList(){
         listroot.render(element);
     });
 }
+
+
+export function pastAssignmentList(){
+    var date = new Date().toISOString().split('T')[0];
+    var user_id = localStorage.getItem('user_id');
+    const api = "http://localhost:5000/getAllTeacherAssignments";
+    var data = JSON.stringify(
+        {
+            user_id: user_id
+        }
+    );
+    sendPostRequest(api,data).then(function(v){
+        var assignments = []
+        v = JSON.parse(JSON.parse(v));
+        for(var i = 0; i < v.length; i++){
+            var assignment = v[i]
+            if(assignment['due_date'] < date){
+                var li = <li key={i}>{assignment['assignment_name']} - {assignment['course_name']} - {assignment['points']} - {assignment['due_date']}</li>
+                assignments.push(li);
+            }
+        }
+        const listroot = ReactDOM.createRoot(document.querySelector("#teacherdashboard"));
+        const element = <div><h1>Past Due Assignments</h1> {assignments}</div>;
+        listroot.render(element);
+    });
+}
