@@ -26,7 +26,7 @@ function setCourseID(course_id) {
 }
 
 // helper function to render the course list
-function renderCourses(api, data, html_element) {
+function renderCourses(api, data, html_element, account) {
     sendPostRequest(api,data).then(function(v){
         v = JSON.parse(v);
         var courselist = [];
@@ -34,13 +34,23 @@ function renderCourses(api, data, html_element) {
             var course = v[i];
             var child;
             var course_id = course['course_id'];
-            child =  <li id={course_id} key={course_id}> {course['course_name']} 
-                        <ul>
-                            <li> <a href="/studentannouncements" onClick={setCourseID(course_id)}> Announcements </a> </li>
-                            <li> <a href="/studentassignments" onClick={setCourseID(course_id)}> Assignments </a> </li>
-                            <li> <a href="/studentgrades" onClick={setCourseID(course_id)}> Grades </a> </li>
-                        </ul>
-                     </li>
+            if (account == "teacher") {
+                child =  <li id={course_id} key={course_id}> {course['course_name']} 
+                            <ul>
+                                <li> <a href="/teacherannouncements" onClick={setCourseID(course_id)}> Announcements </a> </li>
+                                <li> <a href="/teacherassignments" onClick={setCourseID(course_id)}> Assignments </a> </li>
+                                <li> <a href="/teachergrades" onClick={setCourseID(course_id)}> Grades </a> </li>
+                            </ul>
+                        </li>
+            } else {
+                child =  <li id={course_id} key={course_id}> {course['course_name']} 
+                <ul>
+                    <li> <a href="/studentannouncements" onClick={setCourseID(course_id)}> Announcements </a> </li>
+                    <li> <a href="/studentassignments" onClick={setCourseID(course_id)}> Assignments </a> </li>
+                    <li> <a href="/studentgrades" onClick={setCourseID(course_id)}> Grades </a> </li>
+                </ul>
+            </li>
+            }
             courselist.push(child);
         }
         const userroot = ReactDOM.createRoot(document.querySelector(html_element));
@@ -54,7 +64,7 @@ export function getStudentCourses(user_id) {
         { user_id : user_id
         }
     );
-    renderCourses(api, data, "#studentcourses");
+    renderCourses(api, data, "#studentcourses", "student");
 }
 
 export function getTeacherCourses(user_id) {
@@ -64,7 +74,7 @@ export function getTeacherCourses(user_id) {
             user_id : user_id
         }
     );
-    renderCourses(api, data, "#teachercourses");
+    renderCourses(api, data, "#teachercourses", "teacher");
 }
 
 // *****************************************************************
@@ -72,6 +82,8 @@ export function getTeacherCourses(user_id) {
 // Announcements
 // *****************************************************************
 // *****************************************************************
+
+// render the announcements of the current course
 export function getAnnouncements() {
     const api = "http://localhost:5000/getAnnouncementsByCourse";
     const course_id = localStorage.getItem('course_id');
@@ -86,11 +98,25 @@ export function getAnnouncements() {
         for(var i = 0; i < v.length; i++){
             var announcement = v[i];
             var child;
-            child =  <li id={i} key = {i}> {announcement['announcement']} </li>
+            child =  <li id={i} key={i}> {announcement['announcement']} </li>
             announcements.push(child);
         }
         const announcementroot = ReactDOM.createRoot(document.querySelector("#announcements"));
         const element = <div>{announcements}</div>;
         announcementroot.render(element);
     });    
+}
+
+export function createAnnouncement() {
+    const api = "http://localhost:5000/getAnnouncementsByCourse";
+    const course_id = localStorage.getItem('course_id');
+    let description = document.querySelector("#announcement_text").value;
+    
+    const data = JSON.stringify(
+        { course_id: course_id,
+          description: description
+        }
+    );
+
+    sendPostRequest(api,data);
 }
