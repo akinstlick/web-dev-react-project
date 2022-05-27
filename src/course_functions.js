@@ -229,6 +229,7 @@ export function getAllStudentGrades(){
                     var grade = assignment['grade'];
                     var id = assignment['assignment_id'];
                     var points = assignment['points'];
+                    var submission_text = assignment['submission_text'];
 
                     if(grade == -2) {
                         grade = 'Not Submitted';
@@ -241,7 +242,13 @@ export function getAllStudentGrades(){
                     if(grade == -1) {
                         assignment_grade =  (<div id={(user_id, id)} key={(user_id, id)}>
                                                 <span> {assignment_name}: Ungraded </span>
-                                                <button > Grade Assignment </button>
+                                                <button onClick={function () { document.getElementById("submit_grade").style.display = 'block'}}> Grade Assignment </button>
+                                                <form id="submit_grade" style={{ display: 'none' }} onSubmit={function () {submitGrade(user_id)}}>
+                                                    <input type = "hidden" id="assignment_id" value = {id} ></input>
+                                                    {submission_text} <br/>
+                                                    Grade (/{points}): <input type="number" id="points_earned" max={points}></input>
+                                                    <input type="submit"></input>
+                                                </form>
                                                 <br/>
                                             </div>)
                     }
@@ -259,4 +266,20 @@ export function getAllStudentGrades(){
         }    
     }
     getStudents();
+}
+
+// helper function to submit a grade to the database
+function submitGrade(user_id) {
+    var grade = document.querySelector('#points_earned').value;
+    var assignment_id = document.querySelector('#assignment_id').value;
+
+    const url = "http://localhost:5000/addGradeForSubmission";
+    const data = JSON.stringify(
+                { user_id: user_id,
+                  assignment_id: assignment_id,
+                  grade: grade
+                });
+    
+    sendPostRequest(url,data);
+
 }

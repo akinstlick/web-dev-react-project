@@ -638,19 +638,22 @@ def getStudentGrades():
         assignment_id = assignment[0]
         assignment_name = assignment[1]
         points = assignment[2]
-        query = f'''SELECT grade FROM submissions WHERE user_id = {user_id} AND assignment_id = {assignment_id};'''
+        query = f'''SELECT grade, submission_text FROM submissions WHERE user_id = {user_id} AND assignment_id = {assignment_id};'''
         print(query)
         submission = conn.execute(query).fetchall()
         print(submission)
         if len(submission) == 0:
             grade = -2 # grade = -1 means ungraded, grade = -2 means no submission from student
+            submission_text = -2 
         else:
             grade = submission[0][0]
+            submission_text = submission[0][1]
         dict = {
             'assignment_id' : assignment_id,
             'assignment_name' : assignment_name,
             'points' : points,
-            'grade' : grade
+            'grade' : grade,
+            'submission_text': submission_text
         }
         assignment_list.append(dict)
     
@@ -745,13 +748,14 @@ def submitAssignment():
 # the submission should already be in the table "submissions" identified by user and assignment id
 @app.route('/addGradeForSubmission', methods=['POST'])
 def addGradeForSubmission():
+    print("adding grade for submissions")
     data = json.loads(request.data, strict = False)
     user_id = data['user_id']
     assignment_id = data['assignment_id']
     grade = data['grade']
 
     query = f'''UPDATE submissions SET grade = {grade} WHERE user_id = {user_id} AND assignment_id = {assignment_id};'''
-
+    print(query)
     conn = connect_to_db()
     cur = conn.cursor()
     cur.execute(query)
