@@ -187,17 +187,3 @@ export function createCourse(){
     sendPostRequest(addcourseapi,addcoursedata);
     sendPostRequest(adduserapi,adduserdata);
 }
-
-export function AssignmentList(){
-    var user_id = localStorage.getItem('user_id');
-    const api = "http://localhost:5000/getAllTeacherAssignments";
-    var data = JSON.stringify(
-        {
-            user_id: user_id
-        }
-    );
-    sendPostRequest(api,data).then(function(v){
-        v = JSON.parse(JSON.parse(v));
-        console.log(v);
-    });
-}
