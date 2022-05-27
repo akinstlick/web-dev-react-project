@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { createCourse, getUserType } from "../admin_functions";
-import { getStudentCourses } from "../course_functions.js"
+import { getStudentCourses } from "../course_functions";
 import Sidebar from "./sidebar";
 
 
@@ -9,11 +9,22 @@ function Courses(){
         getUserType();
     });
     var accounttype = localStorage.getItem('account_type');
+    var user_id = localStorage.getItem('user_id');
     switch(accounttype){
         case "student":
-            useEffect(() => {
-                getStudentCourses();
-            });
+            alert(user_id);
+            /*getStudentCourses(user_id).then(function(course_list){
+                alert(course_list);
+                return (<div > Hello World! </div>);
+            });*/
+            //let response = getStudentCourses(user_id);
+            //alert(response);
+            return (
+                <div>
+                    <h1>Error: couldn't get student coujrses</h1>
+                </div>
+            )
+
             /*return (
                 <div id="courses">
                     <Sidebar />
