@@ -519,14 +519,17 @@ def getAllStudentAssignments():
     for course_id in course_ids:
         query = f'''SELECT course_name FROM courses WHERE course_id = {course_id};'''
         course_name = conn.execute(query).fetchall()[0][0]
-        query = f'''SELECT assignment_name, points, due_date FROM assignments WHERE course_id = {course_id};'''
+        query = f'''SELECT assignment_name, points, due_date, assignment_id, assignment_desc FROM assignments WHERE course_id = {course_id};'''
         assignments = conn.execute(query).fetchall()
         for assignment in assignments:
             assignmentdict = {
                 'assignment_name': assignment[0],
                 'course_name': course_name,
                 'points': assignment[1],
-                'due_date': assignment[2]
+                'due_date': assignment[2],
+                'assignment_id': assignment[3],
+                'description': assignment[4],
+                'course_id': course_id
             }
             assignment_list.append(assignmentdict)
 
