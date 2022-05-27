@@ -18,6 +18,7 @@ async function sendPostRequest(url, data) {
 export function getassignments(){    
     var user_id = localStorage.getItem('user_id');
     var course_id = localStorage.getItem('course_id');
+    var course_name = localStorage.getItem('course_name');
     const api = "http://localhost:5000/getAllStudentAssignments";
     //getAllStudentAssignments
     var data = JSON.stringify(
@@ -27,6 +28,8 @@ export function getassignments(){
     );
     let getAssignments = async () => {
         var assignmentlist = [];
+        assignmentlist.push(<h3>{course_name} Assignments</h3>);
+
         const response = await fetch(`${api}`, {
             method: 'POST',
             credentials: 'same-origin',
@@ -83,14 +86,15 @@ export function getassignments(){
                             </li>
                 } else {
                     var li = <li key={i} id={assignment['assignment_id']} assignmentname={assignment['assignment_name']} desc={assignment['description']} due={assignment['due_date']} points={assignment['points']}>
-                                {assignment_name}
+                                {assignment_name} 
                                 <form id={unique_id} onSubmit={function () {submit_assignment()}}>
                                     <input type = "hidden" id="assignment_id" value = {assignment_id} ></input>
-                                    <h3>{assignment_name} </h3><br/>
+                                    <h4> Submit {assignment_name}: </h4>
                                     <span>{desc} </span>
                                     <span> due: {due_date} </span>
                                     <span> points: {points} </span> <br/>
                                     <textarea id = "submission_text" rows = "4" cols = "60" placeholder = "Enter assignment here"></textarea>
+                                    <br/>
                                     <input type="submit"></input>
                                 </form>
                             </li>
@@ -154,6 +158,7 @@ export function createAssignment(){
 
 export function AssignmentList(){
     var user_id = localStorage.getItem('user_id');
+    const course_name = localStorage.getItem('course_name');
     const api = "http://localhost:5000/getAllTeacherAssignments";
     var data = JSON.stringify(
         {
@@ -162,6 +167,7 @@ export function AssignmentList(){
     );
     sendPostRequest(api,data).then(function(v){
         var assignments = []
+        assignments.push(<h3>{course_name} Assignments</h3>);
         v = JSON.parse(JSON.parse(v));
         for(var i = 0; i < v.length; i++){
             var assignment = v[i]
@@ -169,7 +175,7 @@ export function AssignmentList(){
             assignments.push(li);
         }
         const listroot = ReactDOM.createRoot(document.querySelector("#assignmentlist"));
-        const element = <div>All Assignments: {assignments}</div>;
+        const element = <div>{assignments}</div>;
         listroot.render(element);
     });
 }
