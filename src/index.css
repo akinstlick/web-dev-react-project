@@ -80,7 +80,10 @@ a[href=account]:hover,a[href=dashboard]:hover,a[href=courses]:hover,a[href=\/]:h
   top: 40%;
 }
 
-/* have teacher assignments say the course name */
+#searchdiv{
+  display: flex;
+  flex-direction: row;
+}
 
 
 
