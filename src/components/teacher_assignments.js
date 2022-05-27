@@ -1,29 +1,24 @@
-function AssignmentList(){
-    return (
-        <div id = "all_assignment_list">
-            <ul>
-                <li> Assignment 1 </li>
-                <li> Assignment 2 </li>
-                <li> Assignment 3 </li> 
-            </ul>
-        </div>
-    )
-}
+import Sidebar from "./sidebar";
+import { AssignmentList } from "../admin_functions";
 
 function TeacherAssignments(){
     return (
         <div>
             <h2> Assignments </h2>
-            <AssignmentList />
-            <form id = "create_assignment">
+            <Sidebar />
+            <div id="assignmentlist" onLoad={AssignmentList()}></div>
+            <button onClick={function(){document.querySelector('#create_assignment').style.display = 'block'}}>Create Assignment</button>
+            <form id = "create_assignment" style={{display:'none'}}>
                 Name: <input type = "text" id = "assignment_name"></input>
                 <br />
                 Number of Points: <input type = "number" id = "assignment_points"></input>
                 <br />
                 Assignment Description
                 <br />
-                <textarea id = "assignment_description" rows = "4" cols = "60"> Enter announcement text here</textarea>
+                <textarea id = "assignment_description" rows = "4" cols = "60" placeholder={"Enter assignment description here"}></textarea>
                 <br />
+                Due Date: <input id="duedate" type={'date'} />
+                <br/>
                 <input type = "submit" value = "Create assignment"></input>
             </form>
         </div>
