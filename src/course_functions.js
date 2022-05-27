@@ -79,7 +79,6 @@ export function getAnnouncements() {
         { course_id: course_id
         });
     
-    
     sendPostRequest(api,data).then(function(v){
         v = JSON.parse(v);
         console.log(v);
