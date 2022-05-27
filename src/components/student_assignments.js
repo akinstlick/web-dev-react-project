@@ -8,6 +8,12 @@ function StudentAssignments(){
             <h2> Assignments </h2>
             <div id = "assignment_list">
             </div>
+
+        </div>
+    )
+}
+
+/*
             <form id = "submit_assignment" style={{display:'none'}}>
                 <h3 id="assignment_label"></h3>
                 <div id="assignment_description"></div>
@@ -15,9 +21,6 @@ function StudentAssignments(){
                 <h3>Submission</h3>
                 <textarea id="submission" type={'text'} /> <br />
                 <input id="submit_button" type={'submit'} />
-            </form>
-        </div>
-    )
-}
-
+            </form>*/
+            
 export default StudentAssignments

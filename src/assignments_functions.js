@@ -15,11 +15,9 @@ async function sendPostRequest(url, data) {
     });
 }
 
-
 export function getassignments(){    
     var user_id = localStorage.getItem('user_id');
-    var assignmentlist = []
-    var course_id = '1';
+    var course_id = localStorage.getItem('course_id');
     const api = "http://localhost:5000/getAllStudentAssignments";
     //getAllStudentAssignments
     var data = JSON.stringify(
@@ -27,38 +25,102 @@ export function getassignments(){
             user_id: user_id
         }
     );
-    sendPostRequest(api,data).then(function(v){
-        v = JSON.parse(JSON.parse(v));
-        console.log(v);
+    let getAssignments = async () => {
+        var assignmentlist = [];
+        const response = await fetch(`${api}`, {
+            method: 'POST',
+            credentials: 'same-origin',
+            cache: 'no-cache',
+            mode: 'cors',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: data
+        });
+        let v = await response.json();
+        v = JSON.parse(v);
+
+        var nextData = JSON.stringify(
+            {
+                user_id: user_id,
+                course_id: course_id
+            }
+        );
+        const nextResponse = await fetch("http://localhost:5000/getSubmissionsByStudent", {
+            method: 'POST',
+            credentials: 'same-origin',
+            cache: 'no-cache',
+            mode: 'cors',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: nextData
+        }   
+        )
+        var submissions = await nextResponse.json();
+        console.log(submissions)
+        var id_values = []
+        for (var i=0; i < submissions.length; i++) {
+            id_values.push(submissions[i]['assignment_id']);
+        }
+        console.log(id_values);
+
         for(var i = 0; i < v.length; i++){
             var assignment = v[i]
             if(assignment['course_id'] == course_id){
-                var li = <li key={i} id={assignment['assignment_id']} assignmentname={assignment['assignment_name']} desc={assignment['description']} due={assignment['due_date']} points={assignment['points']}>
-                            {assignment['assignment_name']}
-                            <button onClick={() => {
-                                document.querySelector('#submit_assignment').style.display = 'block';
-                                document.querySelector('#assignment_label').innerHTML = assignment['assignment_name'];
-                                document.querySelector('#assignment_description').innerHTML = assignment['description'];
-                                document.querySelector('#due_date_points').innerHTML = "due: " + assignment['due_date'] + ", points: " + assignment['points'];
-                                document.querySelector('#submit_button').addEventListener('click',() => submit_assignment(assignment['assignment_id']));
-                            }}>
-                                Complete
-                            </button>
-                        </li>;
-                assignmentlist.push(li)
+                var assignment_id = assignment['assignment_id'];
+                var assignment_name = assignment['assignment_name'];
+                var desc = assignment['assignment_dec'];
+                var points = assignment['points'];
+                var due_date = assignment['due_date'];
+                var unique_id = "submit_assignment_form_" + assignment_id;
+                if (id_values.includes(assignment_id)) {
+                    var li = <li key={i} id={assignment['assignment_id']} assignmentname={assignment['assignment_name']} desc={assignment['description']} due={assignment['due_date']} points={assignment['points']}>
+                                {assignment_name} <br/>
+                                Submitted
+                            </li>
+                } else {
+                    var li = <li key={i} id={assignment['assignment_id']} assignmentname={assignment['assignment_name']} desc={assignment['description']} due={assignment['due_date']} points={assignment['points']}>
+                                {assignment_name}
+                                <form id={unique_id} onSubmit={function () {submit_assignment()}}>
+                                    <input type = "hidden" id="assignment_id" value = {assignment_id} ></input>
+                                    <h3>{assignment_name} </h3><br/>
+                                    <span>{desc} </span>
+                                    <span> due: {due_date} </span>
+                                    <span> points: {points} </span> <br/>
+                                    <textarea id = "submission_text" rows = "4" cols = "60" placeholder = "Enter assignment here"></textarea>
+                                    <input type="submit"></input>
+                                </form>
+                            </li>
+                }
+                assignmentlist.push(li);
             }
         }
+        console.log(assignmentlist);
         const assignmentroot = ReactDOM.createRoot(document.querySelector("#assignment_list"));
         const element = <div>{assignmentlist}</div>;
         assignmentroot.render(element);
-    });
+    }
+    getAssignments();
 }
+
+/*function showAssignment() {
+    document.querySelector('#submit_assignment').style.display = 'block';
+    alert(document.querySelector('#assignment_label_value').value);
+    document.querySelector('#assignment_label').innerHTML = document.querySelector('#assignment_label_value').value;
+    document.querySelector('#assignment_description').innerHTML = assignment['description'];
+    document.querySelector('#due_date_points').innerHTML = "due: " + assignment['due_date'] + ", points: " + assignment['points'];
+    document.querySelector('#submit_button').addEventListener('click',() => submit_assignment(assignment['assignment_id']));
+}*/
 //github id: hegdetejas
 
 
-export function submit_assignment(assignment_id){
+export function submit_assignment(){
     const api = "http://localhost:5000/submitAssignment";
     var submission = document.querySelector('#submission').value;
+    var assignment_id = document.querySelector('#assignment_id');
     var user_id = localStorage.getItem('user_id');
     var data = JSON.stringify(
         {

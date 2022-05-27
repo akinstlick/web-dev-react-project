@@ -539,6 +539,8 @@ def getAllStudentAssignments():
     response = json.dumps(assignment_list)
     response = jsonify(response)
     response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS')
+    response.headers.add('Access-Control-Allow-Headers', 'Origin, Content-Type, X-Auth-Token')
     return response
 
 # /getAllTeacherAssignments: returns a list of all assignments and info in JSON form
@@ -763,6 +765,33 @@ def addGradeForSubmission():
     conn.close()
 
     return 'success'
+
+# /getSubmissionsByStudent: get all the submissions from a given student for a course
+@app.route('/getSubmissionsByStudent', methods=['POST'])
+def getSubmissionsByStudent():
+    data = json.loads(request.data, strict = False)
+    user_id = data['user_id']
+    course_id = int(data['course_id'])
+
+    query = f'''SELECT assignment_id FROM submissions WHERE user_id = {user_id};'''
+    conn = connect_to_db()
+    allassignments = conn.execute(query).fetchall()
+
+    submission_list = []
+    for assignment in allassignments:
+        assignment_id = assignment[0]
+        query = f'''SELECT course_id FROM assignments WHERE assignment_id = {assignment_id};'''
+        a_course_id = conn.execute(query).fetchall()[0][0]
+        if (a_course_id == course_id):
+            dict = {
+                "assignment_id": assignment_id
+            }
+            submission_list.append(dict)
+
+    conn.close()
+    response = jsonify(submission_list)
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
 
 # /getSubmissionsByAssignment: get all the submissions from a given assignment (teacher only)
 @app.route('/getSubmissionsByAssignment', methods=['POST'])
