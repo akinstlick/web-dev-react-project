@@ -120,3 +120,34 @@ export function createAnnouncement() {
 
     sendPostRequest(api,data);
 }
+
+// *****************************************************************
+// *****************************************************************
+// Grades
+// *****************************************************************
+// *****************************************************************
+export function getGradesByStudent() {
+    const api = "http://localhost:5000/getStudentCourses";
+    const course_id = localStorage.getItem('course_id');
+    const user_id = localStorage.getItem('user_id');
+    const data = JSON.stringify(
+        { course_id: course_id,
+          user_id : user_id
+        }
+    );
+
+    sendPostRequest(api,data).then(function(v){
+        v = JSON.parse(v);
+        console.log(v);
+        var grades = [];
+        for(var i = 0; i < v.length; i++){
+            var grade = v[i];
+            var child;
+            child =  <li id={i} key={i}> {announcement['announcement']} </li>
+            announcements.push(child);
+        }
+        const announcementroot = ReactDOM.createRoot(document.querySelector("#announcements"));
+        const element = <div>{announcements}</div>;
+        announcementroot.render(element);
+    }); 
+}

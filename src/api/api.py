@@ -659,6 +659,8 @@ def getStudentGrades():
 # /getAllStudentGrades: get the grades for all students in a course (teacher only)
 @app.route('/getAllStudentGrades', methods=['POST'])
 def getAllStudentGrades():
+    data = json.loads(request.data, strict = False)
+    course_id = data['course_id']
     #TODO
     pass
 
