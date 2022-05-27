@@ -1,6 +1,7 @@
 import { useEffect } from "react";
-import { courseDropdown, getUserType, populateAdminDash } from "../admin_functions";
+import { getUserType, populateAdminDash } from "../admin_functions";
 import Sidebar from "./sidebar";
+import { pastAssignmentList } from "../assignments_functions";
 
 
 function Dashboard(){
@@ -12,21 +13,21 @@ function Dashboard(){
     switch(accounttype){
         case "student":
             return (
-            <div>
+            <div id="dashboard">
                 <Sidebar />
                 student
             </div>
         )
         case "teacher":
             return (
-            <div>
+            <div id="dashboard">
                 <Sidebar />
-                teacher
+                <div id="teacherdashboard" onLoad={pastAssignmentList()}></div>
             </div>
         )
         case "admin":
             return (
-            <div>
+            <div id="dashboard">
                 <Sidebar />
                 <div id="admindashboard">
                     <div id="numstudents"></div>
