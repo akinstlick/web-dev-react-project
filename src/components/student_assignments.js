@@ -1,8 +1,10 @@
 import { getassignments } from "../assignments_functions"
+import Sidebar from "./sidebar";
 
 function StudentAssignments(){
     return (
         <div onLoad={getassignments()}>
+            <Sidebar />
             <h2> Assignments </h2>
             <div id = "assignment_list">
             </div>
