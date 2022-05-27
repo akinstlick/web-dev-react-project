@@ -160,6 +160,24 @@ function rejectUser(userid){
     sendPostRequest(api,data);
 }
 
+export function TeacherSelector(){
+    const api = "http://localhost:5000/getAllTeachers";
+    sendPostRequest(api,'').then(function(v){
+        v = JSON.parse(JSON.parse(v));
+        console.log(v);
+        console.log('got all teachers')
+        var options = [];
+        for(var i = 0; i < v.length; i++){
+            var teacher = v[i];
+            options.push(<option key={-1} value={''}></option>)
+            var teachername = teacher['user_name'];
+            options.push(<option key={i} value={teacher['user_id']}>{teachername}</option>)
+        }
+        var root = ReactDOM.createRoot(document.querySelector('#teacherselector'))
+        root.render(<select>{options}</select>)
+    })
+}
+
 
 export function createCourse(){
     //call addcourse and then addusertoclass

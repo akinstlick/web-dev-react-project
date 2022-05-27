@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { createCourse, getUserType,AdminCourseList } from "../admin_functions";
+import { createCourse, getUserType,AdminCourseList, TeacherSelector } from "../admin_functions";
 import { getStudentCourses, getTeacherCourses} from "../course_functions";
 import Sidebar from "./sidebar";
 
@@ -39,7 +39,7 @@ function Courses(){
                     <h2> All Courses </h2> 
                     <div id = "all_course_list" onLoad={AdminCourseList()}>
                     </div>
-                    <input type = "button" value = "Add a course" onClick={function (){document.querySelector('#add_course').style.display = 'block'}}></input>
+                    <input type = "button" value = "Add a course" onClick={function (){document.querySelector('#add_course').style.display = 'block';TeacherSelector()}}></input>
                     <br />
                     <form id = "add_course" style={{display:'none'}} onSubmit={function(){createCourse()}}>
                         <label htmlFor = "course_name"> Course Name: </label>
@@ -49,10 +49,7 @@ function Courses(){
                         <label htmlFor = "capacity"> Capacity: </label>
                         <input type = {'text'} id = "capacity"></input><br />
                         <label htmlFor = "teacher"> Assigned Teacher: </label>
-                        <select id = "teacher">
-                            <option value = "Dr. A"> Dr. A</option>
-                            <option value = "Professor B"> Professor B </option>
-                        </select>
+                        <div id="teacherselector"></div>
                         <br />
                         <input type = "submit"></input>
                     </form>
