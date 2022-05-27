@@ -12,8 +12,8 @@ function Courses(){
     switch(accounttype){
         case "student":
             useEffect(() => {
-                get
-            })
+                getStudentCourses();
+            });
             /*return (
                 <div id="courses">
                     <Sidebar />
