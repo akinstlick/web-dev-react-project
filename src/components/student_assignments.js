@@ -1,6 +1,8 @@
+import { getassignments } from "../assignments_functions"
+
 function StudentAssignments(){
     return (
-        <div>
+        <div onLoad={getassignments()}>
             <h2> Assignments </h2>
             <div id = "assignment_list">
                 <ul>
@@ -12,10 +14,10 @@ function StudentAssignments(){
             <form id = "submit_assignment">
                 <h3> Assignment 2 </h3> 
                 Question 1:
-                <textarea> Input answer here </textarea>
+                <input type={'text'} placeholder={'answer the question'}></input>
                 <br />
                 Question 2:
-                <textarea> Input answer here </textarea>
+                <input type={'text'} placeholder={'answer the question'}></input>
                 <br />
                 <input type = "submit" value = "Submit Answers"></input>
             </form>
