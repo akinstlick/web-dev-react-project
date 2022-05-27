@@ -1,12 +1,13 @@
-import { Getassignments } from "../assignments_functions"
+import { getassignments } from "../assignments_functions"
 import Sidebar from "./sidebar";
 
 function StudentAssignments(){
     return (
-        <div id="assignments">
+        <div id="assignments" onLoad={getassignments()}>
             <Sidebar />
             <h2> Assignments </h2>
-            <Getassignments />
+            <div id = "assignment_list">
+            </div>
             <form id = "submit_assignment" style={{display:'none'}}>
                 <h3 id="assignment_label"></h3>
                 <div id="assignment_description"></div>
