@@ -17,6 +17,11 @@ async function sendPostRequest(url, data) {
 // *****************************************************************
 // Courses Homepage
 // *****************************************************************
+// helper function to set a course id in local storage
+function setCourseID(course_id) {
+    localStorage.setItem('course_id', course_id);
+}
+
 // helper function to render the course list
 function renderCourses(api, data, html_element) {
     sendPostRequest(api,data).then(function(v){
@@ -25,7 +30,14 @@ function renderCourses(api, data, html_element) {
         for(var i = 0; i < v.length; i++){
             var course = v[i];
             var child;
-            child =  <li id={course['course_id']}> {course['course_name']} </li>
+            var course_id = course['course_id'];
+            child =  <li id={course_id}> {course['course_name']} 
+                        <ul>
+                            <li> <a href="/studentannouncements" onClick={setCourseID(course_id)}> Announcements </a> </li>
+                            <li> <a href="/studentassignments" onClick={setCourseID(course_id)}> Assignments </a> </li>
+                            <li> <a href="/studentgrades" onClick={setCourseID(course_id)}> Grades </a> </li>
+                        </ul>
+                     </li>
             courselist.push(child)
         }
         const userroot = ReactDOM.createRoot(document.querySelector(html_element));
