@@ -127,7 +127,7 @@ export function createAnnouncement() {
 // *****************************************************************
 // *****************************************************************
 export function getGradesByStudent() {
-    const api = "http://localhost:5000/getStudentCourses";
+    const api = "http://localhost:5000/getStudentGrades";
     const course_id = localStorage.getItem('course_id');
     const user_id = localStorage.getItem('user_id');
     const data = JSON.stringify(
@@ -139,15 +139,25 @@ export function getGradesByStudent() {
     sendPostRequest(api,data).then(function(v){
         v = JSON.parse(v);
         console.log(v);
-        var grades = [];
+        var assignments = [];
         for(var i = 0; i < v.length; i++){
-            var grade = v[i];
+            var assignment = v[i];
+            var name = assignment['assignment_name'];
+            var grade = assignment['grade'];
+            if(grade == -1) {
+                grade = 'No Submission';
+            }
             var child;
-            child =  <li id={i} key={i}> {announcement['announcement']} </li>
-            announcements.push(child);
+            child =  <div id={i} key={i}>
+                        <span> {name} </span>
+                        <br/>
+                        <span> Grade: {grade}</span>  
+                        <br/><br/> 
+                     </div>
+            assignments.push(child);
         }
-        const announcementroot = ReactDOM.createRoot(document.querySelector("#announcements"));
-        const element = <div>{announcements}</div>;
-        announcementroot.render(element);
+        const graderoot = ReactDOM.createRoot(document.querySelector("#grades"));
+        const element = <div>{assignments}</div>;
+        graderoot.render(element);
     }); 
 }

@@ -629,7 +629,7 @@ def getStudentGrades():
     assignment_list = []
 
     # get a list of all assignment ids
-    query = f'''SELECT assignment_id, assignment_name, points FROM assignments WHERE course_id = {course_id};'''
+    query = f'''SELECT assignment_id, assignment_name, points FROM assignments WHERE course_id = {course_id} ORDER BY assignment_id ASC;'''
     conn = connect_to_db()
     assignments = conn.execute(query).fetchall()
     for assignment in assignments:
@@ -639,18 +639,19 @@ def getStudentGrades():
         query = f'''SELECT grade FROM submissions WHERE user_id = {user_id} AND assignment_id = {assignment_id};'''
         submission = conn.execute(query).fetchall()
         if len(submission) == 0:
-            grade = 'not submitted'
+            grade = -1
         else:
             grade = submission[0][0]
         dict = {
-            assignment_id : assignment_id,
-            assignment_name : assignment_name,
-            points : points,
-            grade : grade
+            'assignment_id' : assignment_id,
+            'assignment_name' : assignment_name,
+            'points' : points,
+            'grade' : grade
         }
         assignment_list.append(dict)
     
     conn.close()
+    print(assignment_list)
     response = jsonify(assignment_list)
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
