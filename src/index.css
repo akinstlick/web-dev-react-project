@@ -73,3 +73,11 @@ a[href=account]:hover,a[href=dashboard]:hover,a[href=courses]:hover,a[href=\/]:h
   align-items: center;
   flex-direction: column;
 }
+
+@media screen and (max-width: 571px) {
+  #navigation{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+}
