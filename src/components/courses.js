@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { createCourse, getUserType } from "../admin_functions";
+import { createCourse, getUserType,AdminCourseList } from "../admin_functions";
 import { getStudentCourses } from "../course_functions";
 import Sidebar from "./sidebar";
 
@@ -71,14 +71,7 @@ function Courses(){
                 <div id="courses">
                     <Sidebar />
                     <h2> All Courses </h2> 
-                    <div id = "all_course_list">
-                        <ul>
-                            <li> ECON101 </li>
-                            <li> MATH101 </li> 
-                            <li> CMSC101 </li>
-                            <li> CHEM101 </li> 
-                            <li> ENGL101 </li>
-                        </ul>
+                    <div id = "all_course_list" onLoad={AdminCourseList()}>
                     </div>
                     <input type = "button" value = "Add a course" onClick={function (){document.querySelector('#add_course').style.display = 'block'}}></input>
                     <br />
