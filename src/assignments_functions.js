@@ -74,3 +74,8 @@ export function submit_assignment(assignment_id){
     );
     sendPostRequest(api,data);
 }
+
+
+export function createAssignment(){
+    
+}
