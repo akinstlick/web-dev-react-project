@@ -171,32 +171,84 @@ export function getAllStudentGrades(){
         { course_id: course_id,
         }
     );
-
-    sendPostRequest(api,data).then(function(v){
+   
+    let getStudents = async () => {
+        const settings = {
+            method: 'POST',
+            credentials: 'same-origin',
+            cache: 'no-cache',
+            mode: 'no-cors',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: data
+        };
+        try {
+            const fetchResponse = await fetch(`${api}`, settings);
+            console.log("fetched from api");
+            console.log(fetchResponse);
+            const data = await fetchResponse.json();
+            console.log(data);
+        } catch (e) {
+            alert(e);
+            return e;
+        }    
+    }
+    getStudents();
+    /*sendPostRequest(api,data).then(function(v){
         v = JSON.parse(v);
-        console.log(v);
-        var assignments = [];
+        var students = [];
         for(var i = 0; i < v.length; i++){
-            var assignment = v[i];
-            var name = assignment['assignment_name'];
-            var grade = assignment['grade'];
-            if(grade == -2) {
-                grade = 'No Submission';
-            } else if (grade == -1) {
-                grade = 'Ungraded';
-            }
+            let student = v[i];
+            let name = student['user_name'];
+            let user_id = student['user_id'];
+            // add the student to the display
             var child;
-            child =  <div id={i} key={i}>
+            console.log(name);
+            child =  <div id={user_id} key={user_id}>
                         <span> {name} </span>
-                        <br/>
-                        <span> Grade: {grade}</span>  
-                        <br/><br/> 
                      </div>
-            assignments.push(child);
+            students.push(child);
+            // get all the grades for that student
+            const url = "http://localhost:5000/getStudentGrades";
+            const data = JSON.stringify(
+                { course_id: course_id,
+                  user_id : user_id
+                }
+            );
+            sendPostRequest(url,data).then(function(v){
+                v = JSON.parse(v);
+                for(var i = 0; i < v.length; i++){
+                    var assignment = v[i];
+                    var name = assignment['assignment_name'];
+                    var grade = assignment['grade'];
+                    var id = assignment['assignment_id'];
+                    var points = assignment['points'];
+
+                    if(grade == -2) {
+                        grade = 'No Submission';
+                    } else if (grade == -1) {
+                        grade = 'Ungraded';
+                    }
+                    var assignment_grade;
+                    assignment_grade =  (<div id={(id, user_id)} key={(id, user_id)}>
+                                <span> {name} </span>
+                                <br/>
+                                <span> Grade: {grade}</span>  
+                                <br/><br/> 
+                             </div>)
+                    assignment_grade = <div id = "hi" key = "hi">TEST</div>
+                    students.push(assignment_grade);
+                }
+            });
         }
-        const graderoot = ReactDOM.createRoot(document.querySelector("#grades"));
-        const element = <div>{assignments}</div>;
+        console.log(students);
+        const graderoot = ReactDOM.createRoot(document.querySelector("#allgrades"));
+        const element = <div>{students}</div>;
+        console.log(students);
+        console.log(element);
         graderoot.render(element);
     }); 
-
+    */
 }

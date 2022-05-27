@@ -678,8 +678,12 @@ def getAllStudentsByCourse():
         student_list.append(dict)
 
     conn.close()
+    print(student_list)
     response = jsonify(student_list)
+    print(response)
     response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS')
+    response.headers.add('Access-Control-Allow-Headers', 'Origin, Content-Type, X-Auth-Token')
     return response
 
 # /getAllStudentGrades: get the grades for all students in a course (teacher only)

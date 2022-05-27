@@ -97,6 +97,7 @@ export function signupFunc(){
     }
 
     addUser(name, email, id, pass1, s_t, q1, sq1, q2, sq2, q3, sq3);
+    window.location.assign('login');
     return true;
 }
 
@@ -138,31 +139,6 @@ function sendPostRequest(url, data) {
     };
     xhttp.send(data);
     return xhttp.responseText;
-}
-
-// THIS IS A TEST FUNCTION TODO: remove at the end
-async function testUser() {
-    /*let url = 'http://localhost:5000/data'
-    try {
-        let res = await fetch(url);
-        let data = await res.json();
-        data = JSON.parse(data);
-        alert(data);
-        console.log(data);
-        return data;
-    } catch (error) {
-        alert('error');
-        console.log(error);
-    }*/
-    const api = "http://localhost:5000/data";
-    const xhttp = new XMLHttpRequest();
-    xhttp.open("POST", api, true);
-    xhttp.onload = function() {
-        let response = JSON.parse(xhttp.responseText);
-        alert(response['Name']);
-        console.log(response);
-    }
-    xhttp.send();
 }
 
 export function populateAccount(){
