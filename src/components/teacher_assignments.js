@@ -1,3 +1,5 @@
+import Sidebar from "./sidebar";
+
 function AssignmentList(){
     return (
         <div id = "all_assignment_list">
@@ -14,6 +16,7 @@ function TeacherAssignments(){
     return (
         <div>
             <h2> Assignments </h2>
+            <Sidebar />
             <AssignmentList />
             <form id = "create_assignment">
                 Name: <input type = "text" id = "assignment_name"></input>
