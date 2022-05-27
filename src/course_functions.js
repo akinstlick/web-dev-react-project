@@ -108,10 +108,10 @@ export function getAnnouncements() {
 }
 
 export function createAnnouncement() {
-    const api = "http://localhost:5000/getAnnouncementsByCourse";
+    const api = "http://localhost:5000/addAnnouncement";
     const course_id = localStorage.getItem('course_id');
     let description = document.querySelector("#announcement_text").value;
-    
+
     const data = JSON.stringify(
         { course_id: course_id,
           description: description

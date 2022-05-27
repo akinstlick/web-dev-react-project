@@ -14,9 +14,9 @@ function TeacherAnnouncements(){
             <form id = "create_announcement">
                 Description:
                 <br />
-                <textarea id = "announcement_text" rows = "4" cols = "60" value = "Enter announcement description here"></textarea>
+                <textarea id = "announcement_text" rows = "4" cols = "60" defaultValue = "Enter announcement description here"></textarea>
                 <br />
-                <input type = "submit" defaultValue = "Create announcement" onClick = {function(){createAnnouncement()}}></input>
+                <input type = "submit" value = "Create announcement" onClick = {function(){createAnnouncement()}}></input>
             </form>
         </div>
     )
