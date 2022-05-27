@@ -1,9 +1,11 @@
 import sqlite3
 import json
 from flask import Flask, jsonify, request
+from flask_cors import CORS
 
 app = Flask(__name__)
-    
+CORS(app)
+
 def connect_to_db():
     conn = sqlite3.connect('canvas.db')
     conn.row_factory = sqlite3.Row
@@ -655,6 +657,8 @@ def getStudentGrades():
     conn.close()
     response = jsonify(assignment_list)
     response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS')
+    response.headers.add('Access-Control-Allow-Headers', 'Origin, Content-Type, X-Auth-Token')
     return response
 
 # /getAllStudentsByCourse: get all the students in a course (teacher only)
@@ -678,9 +682,7 @@ def getAllStudentsByCourse():
         student_list.append(dict)
 
     conn.close()
-    print(student_list)
     response = jsonify(student_list)
-    print(response)
     response.headers.add('Access-Control-Allow-Origin', '*')
     response.headers.add('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS')
     response.headers.add('Access-Control-Allow-Headers', 'Origin, Content-Type, X-Auth-Token')
