@@ -108,9 +108,11 @@ export function AssignmentList(){
         v = JSON.parse(JSON.parse(v));
         for(var i = 0; i < v.length; i++){
             var assignment = v[i]
-            var li = <li key={i}>Name: {assignment['assignment_name']}</li>
-            assignments.push(li)
+            var li = <li key={i}>{assignment['assignment_name']}</li>
+            assignments.push(li);
         }
-        return <ul>{assignments}</ul>
+        const listroot = ReactDOM.createRoot(document.querySelector("#assignmentlist"));
+        const element = <div>All Assignments: {assignments}</div>;
+        listroot.render(element);
     });
 }

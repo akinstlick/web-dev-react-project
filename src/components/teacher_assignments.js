@@ -6,7 +6,7 @@ function TeacherAssignments(){
         <div>
             <h2> Assignments </h2>
             <Sidebar />
-            <AssignmentList />
+            <div id="assignmentlist" onLoad={AssignmentList()}></div>
             <button onClick={function(){document.querySelector('#create_assignment').style.display = 'block'}}>Create Assignment</button>
             <form id = "create_assignment" style={{display:'none'}} onSubmit={function(){createAssignment()}}>
                 Name: <input type = "text" id = "assignment_name"></input>
