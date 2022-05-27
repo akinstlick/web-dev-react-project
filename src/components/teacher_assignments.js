@@ -1,5 +1,5 @@
 import Sidebar from "./sidebar";
-import { AssignmentList } from "../admin_functions";
+import { AssignmentList, createAssignment } from "../assignments_functions";
 
 function TeacherAssignments(){
     return (
@@ -8,7 +8,7 @@ function TeacherAssignments(){
             <Sidebar />
             <div id="assignmentlist" onLoad={AssignmentList()}></div>
             <button onClick={function(){document.querySelector('#create_assignment').style.display = 'block'}}>Create Assignment</button>
-            <form id = "create_assignment" style={{display:'none'}}>
+            <form id = "create_assignment" style={{display:'none'}} onSubmit={function(){createAssignment()}}>
                 Name: <input type = "text" id = "assignment_name"></input>
                 <br />
                 Number of Points: <input type = "number" id = "assignment_points"></input>

@@ -77,5 +77,42 @@ export function submit_assignment(assignment_id){
 
 
 export function createAssignment(){
-    
+    const api = "http://localhost:5000/addAssignment";
+    var course_id = localStorage.getItem('course_id');
+    var name = document.querySelector('#assignment_name').value;
+    var points = document.querySelector('#assignment_points').value;
+    var description = document.querySelector('#assignment_description').value;
+    var date = document.querySelector('#duedate').value;
+    var data = JSON.stringify(
+        {
+            course_id: course_id,
+            name: name,
+            points: points,
+            description: description,
+            due_date: date
+        }
+    );
+    sendPostRequest(api,data);
+}
+
+export function AssignmentList(){
+    var user_id = localStorage.getItem('user_id');
+    const api = "http://localhost:5000/getAllTeacherAssignments";
+    var data = JSON.stringify(
+        {
+            user_id: user_id
+        }
+    );
+    sendPostRequest(api,data).then(function(v){
+        var assignments = []
+        v = JSON.parse(JSON.parse(v));
+        for(var i = 0; i < v.length; i++){
+            var assignment = v[i]
+            var li = <li key={i}>{assignment['assignment_name']}</li>
+            assignments.push(li);
+        }
+        const listroot = ReactDOM.createRoot(document.querySelector("#assignmentlist"));
+        const element = <div>All Assignments: {assignments}</div>;
+        listroot.render(element);
+    });
 }
