@@ -326,12 +326,15 @@ def addUserToClass():
     elif account_type == 'teacher':
         query = f'''INSERT INTO teaches (user_id, course_id) VALUES ({user_id}, {course_id});'''
     else:
-        return 'failure'
+        result = 'failure'
 
     cur.execute(query)
     conn.commit()
     conn.close()
-    return 'success'
+    result = 'success'
+    response = jsonify({'result':result})
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
 
 # /getAllCourses: returns a list of all courses and info in JSON form (admin only)
 @app.route('/getAllCourses', methods=['POST'])

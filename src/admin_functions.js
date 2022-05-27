@@ -51,30 +51,62 @@ export function UserList(){
             var user = v[i];
             var childdiv
             if(user['active'] == '0'){
-                childdiv =  <div key={user['user_id']}>
+                childdiv =  <div id={user['user_id']} key={user['user_id']}>
                                     <span>name: {user['user_name']}</span>
                                     <span> email: {user['email']}</span>
                                     <span> id: {user['university_id']}</span>
                                     <span> active: {user['active']}  </span>
                                     <button onClick={approveUser(user['user_id'])}>approve</button>
                                     <button onClick={rejectUser(user['user_id'])}>reject</button>
+                                    <div className='coursedropdown'></div>
                                 </div>
             } else {
-                childdiv =  <div key={user['user_id']}>
+                childdiv =  <div id={user['user_id']} key={user['user_id']}>
                                     <span>name: {user['user_name']}</span>
                                     <span> email: {user['email']}</span>
                                     <span> id: {user['university_id']}</span>
                                     <span> active: {user['active']}  </span>
                                     <button onClick={rejectUser(user['user_id'])}>deactivate</button>
+                                    <div className='coursedropdown'></div>
                                 </div>
             }
             userlist.push(childdiv)
         }
         const userroot = ReactDOM.createRoot(document.querySelector("#userlist"));
         const element = <div>{userlist}</div>;
+        courseDropdown();
         userroot.render(element);
     });
 }
+
+export function courseDropdown(){
+    const api = "http://localhost:5000/getAllCourses";
+    sendPostRequest(api,'').then(function(v){
+        v = JSON.parse(JSON.parse(v));
+        console.log('got all courses')
+        console.log(v);
+        var options = [];
+        for(var i = 0; i < v.length; i++){
+            var coursename = v[i]['course_name'];
+            options.push(<option key={i} value={coursename}>{coursename}</option>)
+        }
+        var divs = document.querySelectorAll('.coursedropdown');
+        divs.forEach(div => {
+            var root = ReactDOM.createRoot(div);
+            root.render(
+                <form className='courseform'>
+                    Add to course <br/>
+                    <select className='courses'>
+                        <option>        </option>
+                        {options}
+                    </select>
+                    <input className='submitbtn' type={'submit'}></input>
+                </form>
+            )
+        });
+    });
+}
+
 
 function approveUser(userid){
     const api = "http://localhost:5000/approveUser";

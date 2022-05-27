@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { getUserType, populateAdminDash } from "../admin_functions";
+import { courseDropdown, getUserType, populateAdminDash } from "../admin_functions";
 import Sidebar from "./sidebar";
 
 
