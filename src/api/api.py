@@ -540,22 +540,35 @@ def getAllTeacherAssignments():
 #####################################################################################
 #####################################################################################
 
+# / getAnnouncementsByCourse: given a course id, get all announcements for that course
 @app.route('/getAnnouncementsByCourse', methods=['POST'])
-def getStudentAnnouncements():
-    #TODO
-    pass
+def getAnnouncementsByCourse():
+    data = json.loads(request.data, strict = False)
+    course_id = data['course_id']
+
+    query = f'''SELECT announcement_desc FROM announcements WHERE course_id = {course_id};'''
+
+    conn = connect_to_db()
+    announcements = conn.execute(query).fetchall()
+    conn.close()
+
+    announcement_list = []
+    for announcement in announcements:
+        announcement_list.append(announcement[0])
+
+    response = json.dumps(announcement_list)
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
 
 # /addAnnouncement: add a new announcement for the given course (teacher only)
 @app.route('/addAnnouncement', methods=['POST'])
 def addAnnouncement():
-    #TODO
     data = json.loads(request.data, strict = False)
-    course_name = data['course_name']
-    course_desc = data['description']
-    capacity = data['capacity']
+    course_id = data['course_id']
+    announcement_desc = data['description']
 
-    query = f'''INSERT INTO courses (course_name, course_desc, capacity) VALUES '''
-    query += f'''('{course_name}', '{course_desc}', {capacity});'''
+    query = f'''INSERT INTO announcements (course_id, announcement_desc) VALUES '''
+    query += f'''({course_id}, '{announcement_desc}');'''
 
     print(query)
     
@@ -571,7 +584,10 @@ def addAnnouncement():
 @app.route('/getStudentGrades', methods=['POST'])
 def getStudentGrades():
     #TODO
-    pass
+    data = json.loads(request.data, strict = False)
+    user_id = data['user_id']
+    course_id = data['course_id']
+
 
 # /getAllStudentGrades: get the grades for all students in a course (teacher only)
 @app.route('/getAllStudentGrades', methods=['POST'])
@@ -582,22 +598,72 @@ def getAllStudentGrades():
 # /addAssignment: add a new assignment for the given course (teacher only)
 @app.route('/addAssignment', methods=['POST'])
 def addAssignment():
-    #TODO
-    pass
+    data = json.loads(request.data, strict = False)
+    course_id = data['course_id']
+    assignment_name = data['name']
+    points = data['points']
+    assignment_desc = data['description']
+    due_date = data['due_date']
+
+    query = f'''INSERT INTO assignments (course_id, assignment_name, points, due_date, assignment_desc) '''
+    query += f'''VALUES ({course_id}, '{assignment_name}', {points}, '{due_date}', '{assignment_desc}');'''
+
+    print(query)
+    
+    conn = connect_to_db()
+    cur = conn.cursor()
+    cur.execute(query)
+    conn.commit()
+    conn.close()
+
+    return 'success'
 
 # /submitAssignment: create a submission for an existing assignment (student only)
+# assignment is identified by its ID
 @app.route('/submitAssignment', methods=['POST'])
 def submitAssignment():
-    #TODO
-    pass
+    data = json.loads(request.data, strict = False)
+    user_id = data['user_id']
+    assignment_id = data['assignment_id']
+    submission_text = data['submission']
+
+    query = f'''INSERT INTO submissions (user_id, assignment_id, submission_text) '''
+    query += f'''VALUES ({user_id}, {assignment_id}, '{submission_text}');'''
+
+    print(query)
+
+    conn = connect_to_db()
+    cur = conn.cursor()
+    cur.execute(query)
+    conn.commit()
+    conn.close()
+
+    return 'success'
 
 # /addGradeForSubmission: add a grade for a student submission (teacher only)
-# the submission should already be in the table "submissions"
+# the submission should already be in the table "submissions" identified by user and assignment id
 @app.route('/addGradeForSubmission', methods=['POST'])
 def addGradeForSubmission():
+    data = json.loads(request.data, strict = False)
+    user_id = data['user_id']
+    assignment_id = data['assignment_id']
+    grade = data['grade']
+
+    query = f'''UPDATE submissions SET grade = {grade} WHERE user_id = {user_id} AND assignment_id = {assignment_id};'''
+
+    conn = connect_to_db()
+    cur = conn.cursor()
+    cur.execute(query)
+    conn.commit() 
+    conn.close()
+
+    return 'success'
+
+# /getSubmissions: get all the submissions for the teacher to grade (teacher only)
+@app.route('/getSubmissions', methods=['POST'])
+def getSubmissions():
     #TODO
     pass
-
 
 #####################################################################################
 
