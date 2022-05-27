@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { getUserType } from "../admin_functions";
+import { getStudentCourses } from "../course_functions.js"
 import Sidebar from "./sidebar";
 
 
@@ -10,7 +11,10 @@ function Courses(){
     var accounttype = localStorage.getItem('account_type');
     switch(accounttype){
         case "student":
-            return (
+            useEffect(() => {
+                get
+            })
+            /*return (
                 <div id="courses">
                     <Sidebar />
                     <h2> Your Courses </h2>
@@ -29,7 +33,7 @@ function Courses(){
                         </ul>
                     </div>
                 </div>
-            )
+            )*/
         case 'teacher':
             return (
                 <div id="courses">
