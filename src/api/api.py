@@ -637,9 +637,11 @@ def getStudentGrades():
         assignment_name = assignment[1]
         points = assignment[2]
         query = f'''SELECT grade FROM submissions WHERE user_id = {user_id} AND assignment_id = {assignment_id};'''
+        print(query)
         submission = conn.execute(query).fetchall()
+        print(submission)
         if len(submission) == 0:
-            grade = -1
+            grade = -2 # grade = -1 means ungraded, grade = -2 means no submission from student
         else:
             grade = submission[0][0]
         dict = {
@@ -651,11 +653,34 @@ def getStudentGrades():
         assignment_list.append(dict)
     
     conn.close()
-    print(assignment_list)
     response = jsonify(assignment_list)
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
 
+# /getAllStudentsByCourse: get all the students in a course (teacher only)
+@app.route('/getAllStudentsByCourse', methods=['POST'])
+def getAllStudentsByCourse():
+    data = json.loads(request.data, strict = False)
+    course_id = data['course_id']
+
+    query = f'''SELECT user_id FROM takes WHERE course_id = {course_id};'''
+    conn = connect_to_db()
+    students = conn.execute(query).fetchall()
+    student_list = []
+    for student in students:
+        user_id = student[0]
+        query = f'''SELECT user_name FROM users WHERE user_id = {user_id};'''
+        name = conn.execute(query).fetchall()[0][0]
+        dict = {
+            "user_id" : user_id,
+            "user_name" : name
+        }
+        student_list.append(dict)
+
+    conn.close()
+    response = jsonify(student_list)
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
 
 # /getAllStudentGrades: get the grades for all students in a course (teacher only)
 @app.route('/getAllStudentGrades', methods=['POST'])
@@ -697,8 +722,8 @@ def submitAssignment():
     assignment_id = data['assignment_id']
     submission_text = data['submission']
 
-    query = f'''INSERT INTO submissions (user_id, assignment_id, submission_text) '''
-    query += f'''VALUES ({user_id}, {assignment_id}, '{submission_text}');'''
+    query = f'''INSERT INTO submissions (user_id, assignment_id, submission_text, grade) '''
+    query += f'''VALUES ({user_id}, {assignment_id}, '{submission_text}', -1);'''
 
     print(query)
 

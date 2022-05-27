@@ -144,8 +144,10 @@ export function getGradesByStudent() {
             var assignment = v[i];
             var name = assignment['assignment_name'];
             var grade = assignment['grade'];
-            if(grade == -1) {
+            if(grade == -2) {
                 grade = 'No Submission';
+            } else if (grade == -1) {
+                grade = 'Ungraded';
             }
             var child;
             child =  <div id={i} key={i}>
@@ -160,4 +162,41 @@ export function getGradesByStudent() {
         const element = <div>{assignments}</div>;
         graderoot.render(element);
     }); 
+}
+
+export function getAllStudentGrades(){
+    const api = "http://localhost:5000/getAllStudentsByCourse";
+    const course_id = localStorage.getItem('course_id');
+    const data = JSON.stringify(
+        { course_id: course_id,
+        }
+    );
+
+    sendPostRequest(api,data).then(function(v){
+        v = JSON.parse(v);
+        console.log(v);
+        var assignments = [];
+        for(var i = 0; i < v.length; i++){
+            var assignment = v[i];
+            var name = assignment['assignment_name'];
+            var grade = assignment['grade'];
+            if(grade == -2) {
+                grade = 'No Submission';
+            } else if (grade == -1) {
+                grade = 'Ungraded';
+            }
+            var child;
+            child =  <div id={i} key={i}>
+                        <span> {name} </span>
+                        <br/>
+                        <span> Grade: {grade}</span>  
+                        <br/><br/> 
+                     </div>
+            assignments.push(child);
+        }
+        const graderoot = ReactDOM.createRoot(document.querySelector("#grades"));
+        const element = <div>{assignments}</div>;
+        graderoot.render(element);
+    }); 
+
 }
