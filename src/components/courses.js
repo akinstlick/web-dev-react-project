@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { getUserType } from "../admin_functions";
+import { createCourse, getUserType } from "../admin_functions";
 import { getStudentCourses } from "../course_functions.js"
 import Sidebar from "./sidebar";
 
@@ -71,7 +71,7 @@ function Courses(){
                     </div>
                     <input type = "button" value = "Add a course" onClick={function (){document.querySelector('#add_course').style.display = 'block'}}></input>
                     <br />
-                    <form id = "add_course" style={{display:'none'}}>
+                    <form id = "add_course" style={{display:'none'}} onSubmit={function(){createCourse()}}>
                         <label htmlFor = "course_name"> Course Name: </label>
                         <input type={'text'} id = "course_name"></input><br />
                         <label htmlFor = "desc"> Description: </label>

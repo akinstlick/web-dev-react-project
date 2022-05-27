@@ -146,3 +146,31 @@ function rejectUser(userid){
     );
     sendPostRequest(api,data);
 }
+
+
+export function createCourse(){
+    //call addcourse and then addusertoclass
+    //addcourse: name, description, capacity
+    //addusertoclass: userid, course name
+    var coursename = document.querySelector("#course_name").value
+    var coursedescription = document.querySelector("#desc").value
+    var capacity = document.querySelector("#capacity").value
+    var teacher = document.querySelector("#teacher").value
+    const addcourseapi = "http://localhost:5000/addCourse";
+    var addcoursedata = JSON.stringify(
+        {
+            course_name: coursename,
+            description: coursedescription,
+            capacity: capacity
+        }
+    );
+    const adduserapi = "http://localhost:5000/addUserToClass";
+    var adduserdata = JSON.stringify(
+        {
+            user_id: teacher,
+            course_name: coursename
+        }
+    );
+    sendPostRequest(addcourseapi,addcoursedata);
+    sendPostRequest(adduserapi,adduserdata);
+}
