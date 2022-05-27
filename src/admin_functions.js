@@ -71,7 +71,7 @@ export function UserList(){
             var user = v[i];
             var childdiv
             if(user['active'] == '0'){
-                childdiv =  <div id={user['user_id']} key={user['user_id']}>
+                childdiv =  <div className='userDiv' id={user['user_id']} key={user['user_id']}>
                                     <span>name: {user['user_name']}</span>
                                     <span> email: {user['email']}</span>
                                     <span> id: {user['university_id']}</span>
@@ -81,7 +81,7 @@ export function UserList(){
                                     <div className='coursedropdown'></div>
                                 </div>
             } else {
-                childdiv =  <div id={user['user_id']} key={user['user_id']}>
+                childdiv =  <div className='userDiv' id={user['user_id']} key={user['user_id']}>
                                     <span>name: {user['user_name']}</span>
                                     <span> email: {user['email']}</span>
                                     <span> id: {user['university_id']}</span>
@@ -186,4 +186,24 @@ export function createCourse(){
     );
     sendPostRequest(addcourseapi,addcoursedata);
     sendPostRequest(adduserapi,adduserdata);
+}
+
+
+export function searchBar(){
+    let input = document.getElementById('searchbar').value
+    input=input.toLowerCase();
+    searchBarByString(input);
+}
+
+export function searchBarByString(s){
+    let x = document.getElementsByClassName('userDiv');
+      
+    for (var i = 0; i < x.length; i++) { 
+        if (!x[i].innerHTML.toLowerCase().includes(s)) {
+            x[i].style.display="none";
+        }
+        else {
+            x[i].style.display="block";                 
+        }
+    }
 }
