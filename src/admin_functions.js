@@ -30,20 +30,23 @@ export function getUserType() {
 }
 
 export function populateAdminDash(){
-    var numstudents = document.querySelector('#numstudents');
-    var numcourses = document.querySelector('#numcourses');
-    var numteachers = document.querySelector('#numteachers');
-    const api = "http://localhost:5000/getAdminSummary";
-    sendPostRequest(api,'').then(function(v){
-        v = JSON.parse(v);
-        numstudents.innerHTML = "Number of Students: " + v['num_students'];
-        numcourses.innerHTML = "Number of Courses: " + v['num_courses'];
-        numteachers.innerHTML = "Number of Teachers: " + v['num_teachers'];
-    });   
+    var usertype = localStorage.getItem('account_type')
+    if(usertype == 'admin'){
+        var numstudents = document.querySelector('#numstudents');
+        var numcourses = document.querySelector('#numcourses');
+        var numteachers = document.querySelector('#numteachers');
+        const api = "http://localhost:5000/getAdminSummary";
+        sendPostRequest(api,'').then(function(v){
+            v = JSON.parse(v);
+            numstudents.innerHTML = "Number of Students: " + v['num_students'];
+            numcourses.innerHTML = "Number of Courses: " + v['num_courses'];
+            numteachers.innerHTML = "Number of Teachers: " + v['num_teachers'];
+        }); 
+    };
 }
 
 export function populateAdminCourses(){
-    
+
 }
 
 export function UserList(){
@@ -60,8 +63,8 @@ export function UserList(){
                                     <span> email: {user['email']}</span>
                                     <span> id: {user['university_id']}</span>
                                     <span> active: {user['active']}  </span>
-                                    <button onClick={approveUser(user['user_id'])}>approve</button>
-                                    <button onClick={rejectUser(user['user_id'])}>reject</button>
+                                    <button onClick={function() {approveUser(user['user_id'])}}>approve</button>
+                                    <button onClick={function() {rejectUser(user['user_id'])}}>reject</button>
                                     <div className='coursedropdown'></div>
                                 </div>
             } else {
@@ -70,7 +73,7 @@ export function UserList(){
                                     <span> email: {user['email']}</span>
                                     <span> id: {user['university_id']}</span>
                                     <span> active: {user['active']}  </span>
-                                    <button onClick={rejectUser(user['user_id'])}>deactivate</button>
+                                    <button onClick={function() {rejectUser(user['user_id'])}}>deactivate</button>
                                     <div className='coursedropdown'></div>
                                 </div>
             }
@@ -98,7 +101,7 @@ export function courseDropdown(){
         divs.forEach(div => {
             var root = ReactDOM.createRoot(div);
             root.render(
-                <form className='courseform'>
+                <form className='courseform' onSubmit={function(){addUserToCourse(div.parentElement)}}>
                     Add to course <br/>
                     <select className='courses'>
                         <option>        </option>
@@ -111,6 +114,18 @@ export function courseDropdown(){
     });
 }
 
+function addUserToCourse(div){
+    var user_id = div.getAttribute('id');
+    var course_name = div.querySelector('#courses').value;
+    const api = "http://localhost:5000/addUserToClass";
+    var data = JSON.stringify(
+        {
+            user_id: user_id,
+            course_name: course_name
+        }
+    );
+    sendPostRequest(api,data);
+}
 
 function approveUser(userid){
     const api = "http://localhost:5000/approveUser";
