@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { createCourse, getUserType,AdminCourseList } from "../admin_functions";
-import { getStudentCourses } from "../course_functions";
+import { getStudentCourses, getTeacherCourses} from "../course_functions";
 import Sidebar from "./sidebar";
 
 
@@ -23,23 +23,12 @@ function Courses(){
             )
             
         case 'teacher':
+            getTeacherCourses(user_id);
             return (
-                <div id="courses">
+                <div>
                     <Sidebar />
-                    <h2> Your Courses </h2>
-                    <div id = "course_list">
-                        <ul>
-                            <li> CHEM101 </li>
-                            <li> MATH101 </li> 
-                            <li> ENGL101 </li>
-                        </ul>
-                    </div>
-                    <div id = "course_nav_menu">
-                        <ul>
-                            <a href = "teacherannouncements"><li> Announcements </li></a>
-                            <a href = "teacherassignments"><li> Assignments </li></a>
-                            <a href = "teachergrades"><li> Grades </li></a>
-                        </ul>
+                    <h1>Courses</h1>
+                    <div id="teachercourses" style={{display:"flex",justifyContent:"center"}}>
                     </div>
                 </div>
             )

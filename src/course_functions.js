@@ -17,13 +17,8 @@ async function sendPostRequest(url, data) {
 // *****************************************************************
 // Courses Homepage
 // *****************************************************************
-export function getStudentCourses(user_id) {
-    alert("getStudentcourses");
-    const api = "http://localhost:5000/getStudentCourses";
-    const data = JSON.stringify(
-        { user_id : user_id
-        });
-
+// helper function to render the course list
+function renderCourses(api, data, html_element) {
     sendPostRequest(api,data).then(function(v){
         v = JSON.parse(v);
         var courselist = [];
@@ -33,26 +28,29 @@ export function getStudentCourses(user_id) {
             child =  <li id={course['course_id']}> {course['course_name']} </li>
             courselist.push(child)
         }
-        const userroot = ReactDOM.createRoot(document.querySelector("#studentcourses"));
+        const userroot = ReactDOM.createRoot(document.querySelector(html_element));
         const element = <div>{courselist}</div>;
         userroot.render(element);
     });
 }
-
-function getTeacherCourses(user_id) {
-    const api = "http://localhost:5000/getTeacherCourses";
+export function getStudentCourses(user_id) {
+    const api = "http://localhost:5000/getStudentCourses";
     const data = JSON.stringify(
         { user_id : user_id
         }
     );
-
-    sendPostRequest(api,data).then(function(v){
-        v = JSON.parse(JSON.parse(v));
-        alert(v);
-    })
+    renderCourses(api, data, "#studentcourses");
 }
 
-
+export function getTeacherCourses(user_id) {
+    const api = "http://localhost:5000/getTeacherCourses";
+    const data = JSON.stringify (
+        {
+            user_id : user_id
+        }
+    );
+    renderCourses(api, data, "#teachercourses");
+}
 
 // Announcements
 function getAnnouncements(course_id) {
