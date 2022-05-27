@@ -228,8 +228,64 @@ export function nextAssignmentList(){
                 assignments.push(li);
             }
         }
-        const listroot = ReactDOM.createRoot(document.querySelector("#studentdashboard"));
+        const listroot = ReactDOM.createRoot(document.querySelector("#todoassignments"));
+        const element = <div><h1>To-Do Assignments</h1> {assignments}</div>;
+        listroot.render(element);
+    });
+}
+
+export function upcomingAssignmentList(){
+    var date = new Date(new Date().getTime() + (3*24*60*60*1000));
+    var user_id = localStorage.getItem('user_id');
+    const api = "http://localhost:5000/getAllStudentAssignments";
+    var data = JSON.stringify(
+        {
+            user_id: user_id
+        }
+    );
+    sendPostRequest(api,data).then(function(v){
+        var assignments = []
+        v = JSON.parse(JSON.parse(v));
+        for(var i = 0; i < v.length; i++){
+            var assignment = v[i]
+            console.log(assignment);
+            var duedate = new Date(assignment['due_date'])
+            console.log(date);
+            if(duedate > date){
+                var li = <li key={i}>{assignment['assignment_name']} - {assignment['course_name']} - {assignment['points']} - {assignment['due_date']}</li>
+                assignments.push(li);
+            }
+        }
+        const listroot = ReactDOM.createRoot(document.querySelector("#upcomingassignments"));
         const element = <div><h1>Upcoming Assignments</h1> {assignments}</div>;
+        listroot.render(element);
+    });
+}
+
+export function pastStudentAssignmentList(){
+    var date = new Date(new Date().getTime() - (1*24*60*60*1000));
+    var user_id = localStorage.getItem('user_id');
+    const api = "http://localhost:5000/getAllStudentAssignments";
+    var data = JSON.stringify(
+        {
+            user_id: user_id
+        }
+    );
+    sendPostRequest(api,data).then(function(v){
+        var assignments = []
+        v = JSON.parse(JSON.parse(v));
+        for(var i = 0; i < v.length; i++){
+            var assignment = v[i]
+            console.log(assignment);
+            var duedate = new Date(assignment['due_date'])
+            console.log(date);
+            if(duedate < date){
+                var li = <li key={i}>{assignment['assignment_name']} - {assignment['course_name']} - {assignment['points']} - {assignment['due_date']}</li>
+                assignments.push(li);
+            }
+        }
+        const listroot = ReactDOM.createRoot(document.querySelector("#pastassignments"));
+        const element = <div><h1>Past Assignments</h1> {assignments}</div>;
         listroot.render(element);
     });
 }
