@@ -21,8 +21,9 @@ async function sendPostRequest(url, data) {
 // *****************************************************************
 // *****************************************************************
 // helper function to set a course id in local storage
-function setCourseID(course_id) {
+function setCourseID(course_id, course_name) {
     localStorage.setItem('course_id', course_id);
+    localStorage.setItem('course_name', course_name);
 }
 
 // helper function to render the course list
@@ -37,17 +38,17 @@ function renderCourses(api, data, html_element, account) {
             if (account == "teacher") {
                 child =  <li id={course_id} key={course_id}> {course['course_name']} 
                             <ul>
-                                <li> <a href="/teacherannouncements" onClick={setCourseID(course_id)}> Announcements </a> </li>
-                                <li> <a href="/teacherassignments" onClick={setCourseID(course_id)}> Assignments </a> </li>
-                                <li> <a href="/teachergrades" onClick={setCourseID(course_id)}> Grades </a> </li>
+                                <li> <a href="/teacherannouncements" onClick={setCourseID(course_id, course['course_name'])}> Announcements </a> </li>
+                                <li> <a href="/teacherassignments" onClick={setCourseID(course_id, course['course_name'])}> Assignments </a> </li>
+                                <li> <a href="/teachergrades" onClick={setCourseID(course_id, course['course_name'])}> Grades </a> </li>
                             </ul>
                         </li>
             } else {
                 child =  <li id={course_id} key={course_id}> {course['course_name']} 
                 <ul>
-                    <li> <a href="/studentannouncements" onClick={setCourseID(course_id)}> Announcements </a> </li>
-                    <li> <a href="/studentassignments" onClick={setCourseID(course_id)}> Assignments </a> </li>
-                    <li> <a href="/studentgrades" onClick={setCourseID(course_id)}> Grades </a> </li>
+                    <li> <a href="/studentannouncements" onClick={setCourseID(course_id, course['course_name'])}> Announcements </a> </li>
+                    <li> <a href="/studentassignments" onClick={setCourseID(course_id, course['course_name'])}> Assignments </a> </li>
+                    <li> <a href="/studentgrades" onClick={setCourseID(course_id, course['course_name'])}> Grades </a> </li>
                 </ul>
             </li>
             }
@@ -87,6 +88,7 @@ export function getTeacherCourses(user_id) {
 export function getAnnouncements() {
     const api = "http://localhost:5000/getAnnouncementsByCourse";
     const course_id = localStorage.getItem('course_id');
+    const course_name = localStorage.getItem('course_name');
     const data = JSON.stringify(
         { course_id: course_id
         });
@@ -95,6 +97,7 @@ export function getAnnouncements() {
         v = JSON.parse(v);
         console.log(v);
         var announcements = [];
+        announcements.push(<h3>{course_name} Announcements </h3>);
         for(var i = 0; i < v.length; i++){
             var announcement = v[i];
             var child;
@@ -130,6 +133,7 @@ export function getGradesByStudent() {
     const api = "http://localhost:5000/getStudentGrades";
     const course_id = localStorage.getItem('course_id');
     const user_id = localStorage.getItem('user_id');
+    const course_name = localStorage.getItem('course_name');
     const data = JSON.stringify(
         { course_id: course_id,
           user_id : user_id
@@ -140,20 +144,24 @@ export function getGradesByStudent() {
         v = JSON.parse(v);
         console.log(v);
         var assignments = [];
+        assignments.push(<h3>{course_name} Grades</h3>);
         for(var i = 0; i < v.length; i++){
             var assignment = v[i];
             var name = assignment['assignment_name'];
             var grade = assignment['grade'];
+            var points = assignment['points'];
             if(grade == -2) {
-                grade = 'No Submission';
+                grade = 'Grade: No Submission';
             } else if (grade == -1) {
-                grade = 'Ungraded';
+                grade = 'Grade: Ungraded';
+            } else {
+                grade = 'Grade: ' + grade + '/' + points;
             }
             var child;
             child =  <div id={i} key={i}>
                         <span> {name} </span>
                         <br/>
-                        <span> Grade: {grade}</span>  
+                        <span> {grade}</span>  
                         <br/><br/> 
                      </div>
             assignments.push(child);
@@ -168,6 +176,7 @@ export function getGradesByStudent() {
 export function getAllStudentGrades(){
     const api = "http://localhost:5000/getAllStudentsByCourse";
     const course_id = localStorage.getItem('course_id');
+    const course_name = localStorage.getItem('course_name');
     let data = JSON.stringify(
         { course_id: course_id,
         }
@@ -189,7 +198,7 @@ export function getAllStudentGrades(){
             const fetchResponse = await fetch(`${api}`, settings);
             const students = await fetchResponse.json();
             const studentdivs = [];
-
+            studentdivs.push(<h3>{course_name} Grades</h3>);
             const numstudents = students.length
             // for every student in the course
             for (let i = 0; i < numstudents; i++) {
@@ -261,7 +270,6 @@ export function getAllStudentGrades(){
             graderoot.render(element);
             
         } catch (e) {
-            alert(e);
             return e;
         }    
     }
