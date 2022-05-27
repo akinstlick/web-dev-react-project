@@ -623,14 +623,37 @@ def addAnnouncement():
 # /getStudentGrades: get the grades for all assignments for a given course and student
 @app.route('/getStudentGrades', methods=['POST'])
 def getStudentGrades():
-    #TODO
     data = json.loads(request.data, strict = False)
     user_id = data['user_id']
-    course_id = data['course_id']
+    course_id = data['course_id'] 
+    assignment_list = []
 
-    query = f'''SELECT grade FROM submissions WHERE user_id = {user_id} AND course_id = {course_id};'''
-
-
+    # get a list of all assignment ids
+    query = f'''SELECT assignment_id, assignment_name, points FROM assignments WHERE course_id = {course_id};'''
+    conn = connect_to_db()
+    assignments = conn.execute(query).fetchall()
+    for assignment in assignments:
+        assignment_id = assignment[0]
+        assignment_name = assignment[1]
+        points = assignment[2]
+        query = f'''SELECT grade FROM submissions WHERE user_id = {user_id} AND assignment_id = {assignment_id};'''
+        submission = conn.execute(query).fetchall()
+        if len(submission) == 0:
+            grade = 'not submitted'
+        else:
+            grade = submission[0][0]
+        dict = {
+            assignment_id : assignment_id,
+            assignment_name : assignment_name,
+            points : points,
+            grade : grade
+        }
+        assignment_list.append(dict)
+    
+    conn.close()
+    response = jsonify(assignment_list)
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
 
 
 # /getAllStudentGrades: get the grades for all students in a course (teacher only)
@@ -703,20 +726,35 @@ def addGradeForSubmission():
 
     return 'success'
 
-# /getAssignmentsByCourse: get all the submissions from the given course (teacher only)
-@app.route('/getAssignmentsByCourse', methods=['POST'])
-def getAssignmentsByCourse():
+# /getSubmissionsByAssignment: get all the submissions from a given assignment (teacher only)
+@app.route('/getSubmissionsByAssignment', methods=['POST'])
+def getSubmissionsByAssignment():
     data = json.loads(request.data, strict = False)
-    course_id = data['course_id']
+    assignment_id = data['assignment_id']
 
-    # get all the assignment IDs associated with the given course
-    query = f'''SELECT assignment_id, assignment_name, points, due_date, assignment_desc '''
-    query = f'''FROM assignments WHERE '''
+    query = f'''SELECT user_id, submission_text, grade FROM submissions WHERE assignment_id = {assignment_id};'''
+    conn = connect_to_db()
+    submissions = conn.execute(query).fetchall()
 
-    # get all submissions for the given assignment ID and the student who submitted
+    submission_list = []
+    for submission in submissions:
+        user_id = submission[0]
+        query = f'''SELECT user_name FROM users WHERE user_id = {user_id};'''
+        user_name = conn.execute(query).fetchall()[0][0]
 
+        dict = {
+            "user_id" : user_id,
+            "submission_text" : submission[1],
+            "grade" : submission[2],
+            "user_name" : user_name
+        }
+        submission_list.append(dict)
 
-# /getSubmissionsByAssignment
+    conn.close()
+    response = jsonify(submission_list)
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
+    
 
 #####################################################################################
 
