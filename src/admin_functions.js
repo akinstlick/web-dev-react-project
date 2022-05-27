@@ -174,7 +174,7 @@ export function TeacherSelector(){
             options.push(<option key={i} value={teacher['user_id']}>{teachername}</option>)
         }
         var root = ReactDOM.createRoot(document.querySelector('#teacherselector'))
-        root.render(<select>{options}</select>)
+        root.render(<select id='teacher'>{options}</select>)
     })
 }
 
