@@ -32,6 +32,7 @@ function Dashboard(){
             <div id="dashboard">
                 <Sidebar />
                 <div id="admindashboard">
+                    <h1>Admin Dashboard</h1>
                     <div id="numstudents"></div>
                     <div id="numcourses"></div>
                     <div id="numteachers"></div>

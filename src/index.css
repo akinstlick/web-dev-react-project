@@ -76,8 +76,8 @@ a[href=account]:hover,a[href=dashboard]:hover,a[href=courses]:hover,a[href=\/]:h
 }
 
 #admindashboard{
-  position: fixed;
-  top: 40%;
+  position: relative;
+  top: 30%;
 }
 
 #searchdiv{
@@ -91,6 +91,10 @@ a[href=account]:hover,a[href=dashboard]:hover,a[href=courses]:hover,a[href=\/]:h
   #navigation{
     position: relative;
     display: flex;
+    flex-direction: column;
+  }
+  #dashboard,#courses,#assignments,#signup,#signupdiv,#forgotpassworddiv,#studentgrades,
+  #teachergrades,#teacherassignments,#studentannouncements,#teacherannouncements,#adminsettings{
     flex-direction: column;
   }
 }
