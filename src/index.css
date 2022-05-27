@@ -77,7 +77,7 @@ a[href=account]:hover,a[href=dashboard]:hover,a[href=courses]:hover,a[href=\/]:h
 
 #admindashboard{
   position: fixed;
-  top: 40%;
+  top: 30%;
 }
 
 #searchdiv{
