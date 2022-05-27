@@ -13,21 +13,21 @@ function Dashboard(){
     switch(accounttype){
         case "student":
             return (
-            <div>
+            <div id="dashboard">
                 <Sidebar />
                 student
             </div>
         )
         case "teacher":
             return (
-            <div>
+            <div id="dashboard">
                 <Sidebar />
                 <div id="teacherdashboard" onLoad={pastAssignmentList()}></div>
             </div>
         )
         case "admin":
             return (
-            <div>
+            <div id="dashboard">
                 <Sidebar />
                 <div id="admindashboard">
                     <div id="numstudents"></div>

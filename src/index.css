@@ -67,3 +67,9 @@ a[href=account]:hover,a[href=dashboard]:hover,a[href=courses]:hover,a[href=\/]:h
   align-items: center;
   flex-direction: column;
 }
+
+#dashboard,#courses{
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}

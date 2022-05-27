@@ -14,7 +14,7 @@ function Courses(){
         case "student":
             getStudentCourses(user_id);
             return (
-                <div>
+                <div id="courses">
                     <Sidebar />
                     <h1>Courses</h1>
                     <div id="studentcourses" style={{display:"flex",justifyContent:"center"}}>
@@ -25,7 +25,7 @@ function Courses(){
         case 'teacher':
             getTeacherCourses(user_id);
             return (
-                <div>
+                <div id="courses">
                     <Sidebar />
                     <h1>Courses</h1>
                     <div id="teachercourses" style={{display:"flex",justifyContent:"center"}}>
