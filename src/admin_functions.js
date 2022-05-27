@@ -45,8 +45,21 @@ export function populateAdminDash(){
     };
 }
 
-export function populateAdminCourses(){
-
+export function AdminCourseList(){
+    const api = "http://localhost:5000/getAllCourses";
+    sendPostRequest(api,'').then(function(v){
+        v = JSON.parse(JSON.parse(v));
+        console.log(v);
+        var courselist = [];
+        for(var i = 0; i < v.length; i++){
+            var coursename = v[i]['course_name'];
+            console.log(coursename);
+            courselist.push(<li key={i}>{coursename}</li>);
+        }
+        const listroot = ReactDOM.createRoot(document.querySelector("#all_course_list"));
+        const element = <div>{courselist}</div>;
+        listroot.render(element);
+    });
 }
 
 export function UserList(){
