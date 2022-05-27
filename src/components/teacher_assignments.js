@@ -1,14 +1,20 @@
+function AssignmentList(){
+    return (
+        <div id = "all_assignment_list">
+            <ul>
+                <li> Assignment 1 </li>
+                <li> Assignment 2 </li>
+                <li> Assignment 3 </li> 
+            </ul>
+        </div>
+    )
+}
+
 function TeacherAssignments(){
     return (
         <div>
             <h2> Assignments </h2>
-            <div id = "all_assignment_list">
-                <ul>
-                    <li> Assignment 1 </li>
-                    <li> Assignment 2 </li>
-                    <li> Assignment 3 </li> 
-                </ul>
-            </div>
+            <AssignmentList />
             <form id = "create_assignment">
                 Name: <input type = "text" id = "assignment_name"></input>
                 <br />

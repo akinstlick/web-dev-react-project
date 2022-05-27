@@ -6,7 +6,6 @@ import Sidebar from "./sidebar";
 function Dashboard(){
     useEffect(() => {
         getUserType();
-        populateAdminDash();
     });
     var accounttype = localStorage.getItem('account_type');
     switch(accounttype){
@@ -26,7 +25,7 @@ function Dashboard(){
         )
         case "admin":
             return (
-            <div>
+            <div onLoad={populateAdminDash}>
                 <Sidebar />
                 <div id="admindashboard">
                     <div id="numstudents"></div>

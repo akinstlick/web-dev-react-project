@@ -42,6 +42,10 @@ export function populateAdminDash(){
     });   
 }
 
+export function populateAdminCourses(){
+    
+}
+
 export function UserList(){
     const api = "http://localhost:5000/getAllUsers";
     sendPostRequest(api,'').then(function(v){

@@ -1,9 +1,54 @@
+import { useEffect } from "react";
+import { getUserType } from "../admin_functions";
 
 
 function Courses(){
-    var accounttype = 1;
+    useEffect(() => {
+        getUserType();
+    });
+    var accounttype = localStorage.getItem('account_type');
     switch(accounttype){
-        case 1:
+        case "student":
+            return (
+                <div id="courses">
+                    <h2> Your Courses </h2>
+                    <div id = "course_list">
+                        <ul>
+                            <li> CHEM101 </li>
+                            <li> MATH101 </li> 
+                            <li> ENGL101 </li>
+                        </ul>
+                    </div>
+                    <div id = "course_nav_menu">
+                        <ul>
+                            <a href = "studentannouncements"><li> Announcements </li></a>
+                            <a href = "studentassignments"><li> Assignments </li></a>
+                            <a href = "studentgrades"><li> Grades </li></a>
+                        </ul>
+                    </div>
+                </div>
+            )
+        case 'teacher':
+            return (
+                <div id="courses">
+                    <h2> Your Courses </h2>
+                    <div id = "course_list">
+                        <ul>
+                            <li> CHEM101 </li>
+                            <li> MATH101 </li> 
+                            <li> ENGL101 </li>
+                        </ul>
+                    </div>
+                    <div id = "course_nav_menu">
+                        <ul>
+                            <a href = "teacherannouncements"><li> Announcements </li></a>
+                            <a href = "teacherassignments"><li> Assignments </li></a>
+                            <a href = "teachergrades"><li> Grades </li></a>
+                        </ul>
+                    </div>
+                </div>
+            )
+        case 'admin':
             return (
                 <div id="courses">
                     <h2> All Courses </h2> 
@@ -33,46 +78,6 @@ function Courses(){
                         <br />
                         <input type = "submit"> </input>
                     </form>
-                </div>
-            )
-        case 2:
-            return (
-                <div id="courses">
-                    <h2> Your Courses </h2>
-                    <div id = "course_list">
-                        <ul>
-                            <li> CHEM101 </li>
-                            <li> MATH101 </li> 
-                            <li> ENGL101 </li>
-                        </ul>
-                    </div>
-                    <div id = "course_nav_menu">
-                        <ul>
-                            <a href = "studentannouncements"><li> Announcements </li></a>
-                            <a href = "studentassignments"><li> Assignments </li></a>
-                            <a href = "studentgrades"><li> Grades </li></a>
-                        </ul>
-                    </div>
-                </div>
-            )
-        case 3:
-            return (
-                <div id="courses">
-                    <h2> Your Courses </h2>
-                    <div id = "course_list">
-                        <ul>
-                            <li> CHEM101 </li>
-                            <li> MATH101 </li> 
-                            <li> ENGL101 </li>
-                        </ul>
-                    </div>
-                    <div id = "course_nav_menu">
-                        <ul>
-                            <a href = "teacherannouncements"><li> Announcements </li></a>
-                            <a href = "teacherassignments"><li> Assignments </li></a>
-                            <a href = "teachergrades"><li> Grades </li></a>
-                        </ul>
-                    </div>
                 </div>
             )
         default:
