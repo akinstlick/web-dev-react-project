@@ -1,3 +1,5 @@
+import * as ReactDOM from 'react-dom/client';
+
 // Helper function to send a post request to the backend
 async function sendPostRequest(url, data) {
     return new Promise(function(resolve,reject) {
@@ -15,11 +17,34 @@ async function sendPostRequest(url, data) {
 // *****************************************************************
 // Courses Homepage
 // *****************************************************************
-function getStudentCourses(user_id) {
+export function getStudentCourses(user_id) {
+    alert("getStudentcourses");
     const api = "http://localhost:5000/getStudentCourses";
     const data = JSON.stringify(
         { user_id : user_id
         });
+
+    sendPostRequest(api,data).then(function(v){
+        v = JSON.parse(v);
+        var courselist = [];
+        for(var i = 0; i < v.length; i++){
+            var course = v[i];
+            var child;
+            child =  <li id={course['course_id']}> {course['course_name']} </li>
+            courselist.push(child)
+        }
+        const userroot = ReactDOM.createRoot(document.querySelector("#studentcourses"));
+        const element = <div>{courselist}</div>;
+        userroot.render(element);
+    });
+}
+
+function getTeacherCourses(user_id) {
+    const api = "http://localhost:5000/getTeacherCourses";
+    const data = JSON.stringify(
+        { user_id : user_id
+        }
+    );
 
     sendPostRequest(api,data).then(function(v){
         v = JSON.parse(JSON.parse(v));

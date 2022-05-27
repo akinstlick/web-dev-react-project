@@ -470,11 +470,14 @@ def getStudentCourses():
 
     conn = connect_to_db()
     for course_id in course_ids:
-        query = f'''SELECT course_name FROM courses WHERE course_id = {course_id};'''
-        courses.append(conn.execute(query).fetchall()[0][0])
+        query = f'''SELECT course_id, course_name FROM courses WHERE course_id = {course_id};'''
+        course = conn.execute(query).fetchall()[0]
+        coursedict = {"course_id": course[0],
+                      "course_name": course[1]}
+        courses.append(coursedict)
 
     conn.close()
-    response = json.dumps(courses)
+    response = jsonify(courses)
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
 

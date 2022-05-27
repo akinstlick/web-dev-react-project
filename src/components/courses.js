@@ -12,39 +12,16 @@ function Courses(){
     var user_id = localStorage.getItem('user_id');
     switch(accounttype){
         case "student":
-            alert(user_id);
-            /*getStudentCourses(user_id).then(function(course_list){
-                alert(course_list);
-                return (<div > Hello World! </div>);
-            });*/
-            //let response = getStudentCourses(user_id);
-            //alert(response);
+            getStudentCourses(user_id);
             return (
                 <div>
-                    <h1>Error: couldn't get student coujrses</h1>
+                    <Sidebar />
+                    <h1>Courses</h1>
+                    <div id="studentcourses" style={{display:"flex",justifyContent:"center"}}>
+                    </div>
                 </div>
             )
-
-            /*return (
-                <div id="courses">
-                    <Sidebar />
-                    <h2> Your Courses </h2>
-                    <div id = "course_list">
-                        <ul>
-                            <li> CHEM101 </li>
-                            <li> MATH101 </li> 
-                            <li> ENGL101 </li>
-                        </ul>
-                    </div>
-                    <div id = "course_nav_menu">
-                        <ul>
-                            <a href = "studentannouncements"><li> Announcements </li></a>
-                            <a href = "studentassignments"><li> Assignments </li></a>
-                            <a href = "studentgrades"><li> Grades </li></a>
-                        </ul>
-                    </div>
-                </div>
-            )*/
+            
         case 'teacher':
             return (
                 <div id="courses">
