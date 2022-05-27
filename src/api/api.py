@@ -586,9 +586,10 @@ def getAnnouncementsByCourse():
 
     announcement_list = []
     for announcement in announcements:
-        announcement_list.append(announcement[0])
+        announcementdict = {"announcement" : announcement[0]}
+        announcement_list.append(announcementdict)
 
-    response = json.dumps(announcement_list)
+    response = jsonify(announcement_list)
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
 
