@@ -167,11 +167,11 @@ export function populateAccount(){
 }
 
 export function editProfile(){
-    console.log('editprofile called');
     var user_id = localStorage.getItem('user_id');
     var newname = document.querySelector('#name_field').value;
     var newemail = document.querySelector('#email_field').value;
     var newid = document.querySelector('#id_field').value;
+    alert(newid);
     //update values in database - do them individually
     if(newname !== ""){
         var nameurl = "http://localhost:5000/changeUserName";
