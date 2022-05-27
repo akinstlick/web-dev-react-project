@@ -68,11 +68,21 @@ a[href=account]:hover,a[href=dashboard]:hover,a[href=courses]:hover,a[href=\/]:h
   flex-direction: column;
 }
 
-#dashboard,#courses,#assignments{
+#dashboard,#courses,#assignments,#signup,#signupdiv,#forgotpassworddiv,#studentgrades,
+#teachergrades,#teacherassignments,#studentannouncements,#teacherannouncements,#adminsettings{
   display: flex;
   align-items: center;
   flex-direction: column;
 }
+
+#admindashboard{
+  position: fixed;
+  top: 40%;
+}
+
+/* have teacher assignments say the course name */
+
+
 
 @media screen and (max-width: 571px) {
   #navigation{

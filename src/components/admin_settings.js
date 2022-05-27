@@ -7,7 +7,7 @@ function AdminSettings(){
         UserList();
     });
     return (
-        <div>
+        <div id="adminsettings">
             <h1>Admin Settings</h1>
             <Sidebar />
             <div id="searchbar">

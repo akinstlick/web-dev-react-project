@@ -3,7 +3,7 @@ import { AssignmentList, createAssignment } from "../assignments_functions";
 
 function TeacherAssignments(){
     return (
-        <div>
+        <div id="teacherassignments">
             <h2> Assignments </h2>
             <Sidebar />
             <div id="assignmentlist" onLoad={AssignmentList()}></div>

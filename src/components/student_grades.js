@@ -7,7 +7,7 @@ function StudentGrades(){
         getGradesByStudent();
     });
     return (
-        <div>
+        <div id="studentgrades">
             <Sidebar />
             <h2> Grades </h2>
             <div id = "grades" style={{display:"flex",justifyContent:"center"}}></div>

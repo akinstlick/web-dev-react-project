@@ -7,9 +7,9 @@ function TeacherGrades(){
         getAllStudentGrades();
     });
     return (
-        <div>
+        <div id="teachergrades">
             <Sidebar />
-            <h2> Student Grades </h2>
+            <h2> Teacher Grades </h2>
             <div id = "allgrades" style={{display:"flex",justifyContent:"center"}}></div>
         </div>
     )

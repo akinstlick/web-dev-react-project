@@ -5,8 +5,8 @@ function Signup(){
 
     return (
         <div>
-        <h1>Canvas</h1>
             <div id="signupdiv">
+                <h1>Canvas</h1>
                 <h2>Sign Up</h2>
                 <form id="signup">
                     <input type="text" id="name" placeholder="name"></input> <br/>

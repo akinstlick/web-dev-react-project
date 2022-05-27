@@ -7,7 +7,7 @@ function TeacherAnnouncements(){
         getAnnouncements();
     });
     return (
-        <div>
+        <div id="teacherannouncements">
             <Sidebar />
             <h2> Announcements </h2>
             <div id = "announcements" style={{display:"flex",justifyContent:"center"}}></div>
