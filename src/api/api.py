@@ -628,6 +628,10 @@ def getStudentGrades():
     user_id = data['user_id']
     course_id = data['course_id']
 
+    query = f'''SELECT grade FROM submissions WHERE user_id = {user_id} AND course_id = {course_id};'''
+
+
+
 
 # /getAllStudentGrades: get the grades for all students in a course (teacher only)
 @app.route('/getAllStudentGrades', methods=['POST'])
@@ -699,11 +703,20 @@ def addGradeForSubmission():
 
     return 'success'
 
-# /getSubmissions: get all the submissions for the teacher to grade (teacher only)
-@app.route('/getSubmissions', methods=['POST'])
-def getSubmissions():
-    #TODO
-    pass
+# /getAssignmentsByCourse: get all the submissions from the given course (teacher only)
+@app.route('/getAssignmentsByCourse', methods=['POST'])
+def getAssignmentsByCourse():
+    data = json.loads(request.data, strict = False)
+    course_id = data['course_id']
+
+    # get all the assignment IDs associated with the given course
+    query = f'''SELECT assignment_id, assignment_name, points, due_date, assignment_desc '''
+    query = f'''FROM assignments WHERE '''
+
+    # get all submissions for the given assignment ID and the student who submitted
+
+
+# /getSubmissionsByAssignment
 
 #####################################################################################
 
