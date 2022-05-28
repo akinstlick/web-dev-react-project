@@ -329,8 +329,9 @@ def getAllTeachers():
     return response
 
 # /addUserToClass: adds a user (identified by user_id) to class as either teacher or student (admin only)
-@app.route('/addUserToClass', methods=['POST'])
+@app.route('/addUserToClass', methods=['POST','GET'])
 def addUserToClass():
+    print("addUserToClass")
     data = json.loads(request.data, strict = False)
     user_id = int(data['user_id'])
     course = data['course_name']
@@ -344,7 +345,7 @@ def addUserToClass():
 
     # determine the course id of the course
     query = f'''SELECT course_id FROM courses WHERE course_name = '{course}';'''
-    course_id = conn.execute(query).fetchall()[0][0]
+    course_id = int(conn.execute(query).fetchall()[0][0])
 
     # insert into the appropriate table depending on account type
     cur = conn.cursor()
@@ -355,6 +356,7 @@ def addUserToClass():
     else:
         result = 'failure'
 
+    print(query)
     cur.execute(query)
     conn.commit()
     conn.close()

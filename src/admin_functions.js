@@ -91,17 +91,18 @@ export function UserList(){
                                         <span> email: {user['email']}</span>
                                         <span> id: {user['university_id']}</span>
                                         <span> active: {user['active']}  </span>
-                                        <button onClick={function() {approveUser(user['user_id'])}}>approve</button>
-                                        <button onClick={function() {rejectUser(user['user_id'])}}>reject</button>
+                                        <button onClick={function() {approveUser()}}>approve</button>
+                                        <button onClick={function() {rejectUser()}}>reject</button>
                                         <div className='coursedropdown'></div>
                                     </div>
                 } else {
                     childdiv =  <div className='userDiv' id={user['user_id']} key={user['user_id']}>
+                                        <input type = "hidden" id = "deactive_user_id_value" value = {user['user_id']}></input>
                                         <span>name: {user['user_name']}</span>
                                         <span> email: {user['email']}</span>
                                         <span> id: {user['university_id']}</span>
                                         <span> active: {user['active']}  </span>
-                                        <button onClick={function() {rejectUser(user['user_id'])}}>deactivate</button>
+                                        <button onClick={function() {rejectUser()}}>deactivate</button>
                                         <div className='coursedropdown'></div>
                                     </div>
                 }
@@ -117,40 +118,7 @@ export function UserList(){
         }    
     }
     getUsers();
-    ///////////////////////////////////////////
-    /*sendPostRequest(api,'').then(function(v){
-        v = JSON.parse(JSON.parse(v));
-        var userlist = [];
-        for(var i = 0; i < v.length; i++){
-            var user = v[i];
-            var childdiv
-            if(user['active'] == '0'){
-                childdiv =  <div className='userDiv' id={user['user_id']} key={user['user_id']}>
-                                    <span>name: {user['user_name']}</span>
-                                    <span> email: {user['email']}</span>
-                                    <span> id: {user['university_id']}</span>
-                                    <span> active: {user['active']}  </span>
-                                    <button onClick={function() {approveUser(user['user_id'])}}>approve</button>
-                                    <button onClick={function() {rejectUser(user['user_id'])}}>reject</button>
-                                    <div className='coursedropdown'></div>
-                                </div>
-            } else {
-                childdiv =  <div className='userDiv' id={user['user_id']} key={user['user_id']}>
-                                    <span>name: {user['user_name']}</span>
-                                    <span> email: {user['email']}</span>
-                                    <span> id: {user['university_id']}</span>
-                                    <span> active: {user['active']}  </span>
-                                    <button onClick={function() {rejectUser(user['user_id'])}}>deactivate</button>
-                                    <div className='coursedropdown'></div>
-                                </div>
-            }
-            userlist.push(childdiv)
-        }
-        const userroot = ReactDOM.createRoot(document.querySelector("#userlist"));
-        const element = <div>{userlist}</div>;
-        courseDropdown();
-        userroot.render(element);
-    });*/
+
 }
 
 export function courseDropdown(){
@@ -195,8 +163,8 @@ function addUserToCourse(div){
     sendPostRequest(api,data);
 }
 
-function approveUser(userid){
-    userid = document.querySelector("#user_id_value").value;
+function approveUser(){
+    let userid = document.querySelector("#user_id_value").value;
     const api = "http://localhost:5000/approveUser";
     var data = JSON.stringify(
         {
@@ -206,7 +174,8 @@ function approveUser(userid){
     sendPostRequest(api,data);
 }
 
-function rejectUser(userid){
+function rejectUser(){
+    let userid = document.querySelector("#deactive_user_id_value").value;
     const api = "http://localhost:5000/deactivateUser";
     var data = JSON.stringify(
         {
@@ -241,8 +210,8 @@ export function createCourse(){
     //addusertoclass: userid, course name
     var coursename = document.querySelector("#course_name").value
     var coursedescription = document.querySelector("#desc").value
-    var capacity = document.querySelector("#capacity").value
-    var teacher = document.querySelector("#teacher").value
+    var capacity = Number(document.querySelector("#capacity").value)
+    var teacher = Number(document.querySelector("#teacher").value)
     const addcourseapi = "http://localhost:5000/addCourse";
     var addcoursedata = JSON.stringify(
         {
@@ -258,8 +227,15 @@ export function createCourse(){
             course_name: coursename
         }
     );
-    sendPostRequest(addcourseapi,addcoursedata);
-    sendPostRequest(adduserapi,adduserdata);
+    let apiCall1 = async () => {
+        sendPostRequest(addcourseapi,addcoursedata);
+    }
+    let apiCall2 = async () => {
+        await apiCall1();
+        sendPostRequest(adduserapi, adduserdata);
+    }
+    apiCall2();
+
 }
 
 

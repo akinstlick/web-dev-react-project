@@ -1,3 +1,7 @@
+function resetLocalStorage() {
+    //localStorage.setItem('account_type', '');
+}
+
 function Sidebar(){
     var accounttype = localStorage.getItem('account_type');
     switch(accounttype){
