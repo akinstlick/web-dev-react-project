@@ -268,14 +268,14 @@ def userType():
 @app.route('/approveUser', methods=['POST'])
 def approveUser():
     data = json.loads(request.data, strict = False)
-    user_id = data['user_id']
+    user_id = int(data['user_id'])
     return changeUserIntInfo(user_id, 'active', 1)
 
 # /deactivateUser: set a user (identified by user_id) status to inactive (admin only)
 @app.route('/deactivateUser', methods=['POST'])
 def deactivateUser():
     data = json.loads(request.data, strict = False)
-    user_id = data['user_id']
+    user_id = int(data['user_id'])
     return changeUserIntInfo(user_id, 'active', 0)
 
 # /getAllUsers: returns a list of all users and their info in JSON form (admin only)
@@ -332,7 +332,7 @@ def getAllTeachers():
 @app.route('/addUserToClass', methods=['POST'])
 def addUserToClass():
     data = json.loads(request.data, strict = False)
-    user_id = data['user_id']
+    user_id = int(data['user_id'])
     course = data['course_name']
     conn = connect_to_db()
 

@@ -64,7 +64,61 @@ export function AdminCourseList(){
 
 export function UserList(){
     const api = "http://localhost:5000/getAllUsers";
-    sendPostRequest(api,'').then(function(v){
+
+    let getUsers = async () => {
+        const settings = {
+            method: 'POST',
+            credentials: 'same-origin',
+            cache: 'no-cache',
+            mode: 'cors',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            }
+        };
+        try {
+            const fetchResponse = await fetch(`${api}`, settings);
+            var v = await fetchResponse.json();
+            v = JSON.parse(v);
+            var userlist = [];
+            for(var i = 0; i < v.length; i++){
+                var user = v[i];
+                var childdiv
+                if(user['active'] == '0'){
+                    childdiv =  <div className='userDiv' id={user['user_id']} key={user['user_id']}>
+                                        <input type = "hidden" id = "user_id_value" value = {user['user_id']}></input>
+                                        <span>name: {user['user_name']}</span>
+                                        <span> email: {user['email']}</span>
+                                        <span> id: {user['university_id']}</span>
+                                        <span> active: {user['active']}  </span>
+                                        <button onClick={function() {approveUser(user['user_id'])}}>approve</button>
+                                        <button onClick={function() {rejectUser(user['user_id'])}}>reject</button>
+                                        <div className='coursedropdown'></div>
+                                    </div>
+                } else {
+                    childdiv =  <div className='userDiv' id={user['user_id']} key={user['user_id']}>
+                                        <span>name: {user['user_name']}</span>
+                                        <span> email: {user['email']}</span>
+                                        <span> id: {user['university_id']}</span>
+                                        <span> active: {user['active']}  </span>
+                                        <button onClick={function() {rejectUser(user['user_id'])}}>deactivate</button>
+                                        <div className='coursedropdown'></div>
+                                    </div>
+                }
+                userlist.push(childdiv)
+            }
+            const userroot = ReactDOM.createRoot(document.querySelector("#userlist"));
+            const element = <div>{userlist}</div>;
+            courseDropdown();
+            userroot.render(element);
+        } catch (e) {
+            alert(e);
+            return e;
+        }    
+    }
+    getUsers();
+    ///////////////////////////////////////////
+    /*sendPostRequest(api,'').then(function(v){
         v = JSON.parse(JSON.parse(v));
         var userlist = [];
         for(var i = 0; i < v.length; i++){
@@ -96,11 +150,12 @@ export function UserList(){
         const element = <div>{userlist}</div>;
         courseDropdown();
         userroot.render(element);
-    });
+    });*/
 }
 
 export function courseDropdown(){
     const api = "http://localhost:5000/getAllCourses";
+    
     sendPostRequest(api,'').then(function(v){
         v = JSON.parse(JSON.parse(v));
         console.log('got all courses')
@@ -128,7 +183,7 @@ export function courseDropdown(){
 }
 
 function addUserToCourse(div){
-    var user_id = div.getAttribute('id');
+    var user_id = Number(div.getAttribute('id'));
     var course_name = div.querySelector('#courses').value;
     const api = "http://localhost:5000/addUserToClass";
     var data = JSON.stringify(
@@ -141,6 +196,7 @@ function addUserToCourse(div){
 }
 
 function approveUser(userid){
+    userid = document.querySelector("#user_id_value").value;
     const api = "http://localhost:5000/approveUser";
     var data = JSON.stringify(
         {

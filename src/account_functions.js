@@ -43,7 +43,6 @@ export function loginFunc(){
                 if (user_id == '0000') {
                     alert("user does not exist or password is incorrect");
                 } else {
-                    alert("success");
                     localStorage.setItem("user_id",user_id);
                     window.location.assign('dashboard');
                 };
@@ -56,8 +55,6 @@ export function loginFunc(){
 
 export function signupFunc(){
     var name = document.querySelector("#name").value;
-    // TODO: check email is valid
-    // TODO: if email already exists in database, route to forgot password
     var email = document.querySelector("#email").value;
     var id = document.querySelector("#id").value;
     var pass1 = document.querySelector("#password1").value;
@@ -171,7 +168,6 @@ export function editProfile(){
     var newname = document.querySelector('#name_field').value;
     var newemail = document.querySelector('#email_field').value;
     var newid = document.querySelector('#id_field').value;
-    alert(newid);
     //update values in database - do them individually
     if(newname !== ""){
         var nameurl = "http://localhost:5000/changeUserName";
@@ -246,10 +242,4 @@ export function changeSecurityQuestions(){
     });
     var url = "http://localhost:5000/changeSecurityQs";
     let response = JSON.parse(sendPostRequest(url,data));
-    let result = response['result'];
-    if(result == 'success'){
-        alert('success');
-    } else {
-        alert('failure');
-    }
 }
