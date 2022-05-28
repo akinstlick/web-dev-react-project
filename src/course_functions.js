@@ -21,43 +21,71 @@ async function sendPostRequest(url, data) {
 // *****************************************************************
 // *****************************************************************
 // helper function to set a course id in local storage
-function setCourseID(course_id, course_name) {
+function setCourseID() {
+    const course_id = document.querySelector("#course_id_value").value;
+    const course_name = document.querySelector("#course_name_value").value;
+
     localStorage.setItem('course_id', course_id);
     localStorage.setItem('course_name', course_name);
+    window.location.assign('teacherannouncements');
 }
 
 // helper function to render the course list
 function renderCourses(api, data, html_element, account) {
-    sendPostRequest(api,data).then(function(v){
-        v = JSON.parse(v);
-        var courselist = [];
-        for(var i = 0; i < v.length; i++){
-            var course = v[i];
-            var child;
-            var course_id = course['course_id'];
-            if (account == "teacher") {
-                child =  <li id={course_id} key={course_id}> {course['course_name']} 
-                            <ul>
-                                <li> <a href="/teacherannouncements" onClick={setCourseID(course_id, course['course_name'])}> Announcements </a> </li>
-                                <li> <a href="/teacherassignments" onClick={setCourseID(course_id, course['course_name'])}> Assignments </a> </li>
-                                <li> <a href="/teachergrades" onClick={setCourseID(course_id, course['course_name'])}> Grades </a> </li>
-                            </ul>
-                        </li>
-            } else {
-                child =  <li id={course_id} key={course_id}> {course['course_name']} 
-                <ul>
-                    <li> <a href="/studentannouncements" onClick={setCourseID(course_id, course['course_name'])}> Announcements </a> </li>
-                    <li> <a href="/studentassignments" onClick={setCourseID(course_id, course['course_name'])}> Assignments </a> </li>
-                    <li> <a href="/studentgrades" onClick={setCourseID(course_id, course['course_name'])}> Grades </a> </li>
-                </ul>
-            </li>
+    let getCourseRenders = async () => {
+        const settings = {
+            method: 'POST',
+            credentials: 'same-origin',
+            cache: 'no-cache',
+            mode: 'cors',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: data
+        };
+        try {
+            const fetchResponse = await fetch(`${api}`, settings);
+            let v = await fetchResponse.json();
+            var courselist = [];
+            for(var i = 0; i < v.length; i++){
+                var course = v[i];
+                var child;
+                var course_id = course['course_id'];
+                var course_name = course['course_name'];
+                if (account == "teacher") {
+                    child =  <li id={course_id} key={course_id}> {course['course_name']} 
+                                <input type = "hidden" id = "course_id_value" value = {course_id}></input>
+                                <input type = "hidden" id = "course_name_value" value = {course_name}></input>
+                                <ul>
+                                    <li> <a href = {"/teacherannouncements?id=" + course_id + "&name=" + course_name}> Announcements </a> </li>
+                                    <li> <a href={"/teacherassignments?id="+ course_id + "&name=" + course_name}> Assignments </a> </li>
+                                    <li> <a href={"/teachergrades?id=" + course_id + "&name=" + course_name}> Grades </a> </li>
+                                </ul>
+                            </li>
+                } else {
+                    child =  <li id={course_id} key={course_id}> {course['course_name']} 
+                                <input type = "hidden" id = "course_id_value" value = {course_id}></input>
+                                <input type = "hidden" id = "course_name_value" value = {course['course_name']}></input>
+                                <ul>
+                                    <li> <a href={"/studentannouncements?id=" + course_id + "&name=" + course_name}> Announcements </a> </li>
+                                    <li> <a href={"/studentassignments?id=" + course_id + "&name=" + course_name}> Assignments </a> </li>
+                                    <li> <a href={"/studentgrades?id=" + course_id + "&name=" + course_name}> Grades </a> </li>
+                                </ul>
+                            </li>
+                }
+                courselist.push(child);
             }
-            courselist.push(child);
-        }
-        const userroot = ReactDOM.createRoot(document.querySelector(html_element));
-        const element = <div>{courselist}</div>;
-        userroot.render(element);
-    });
+            console.log(courselist);
+            const userroot = ReactDOM.createRoot(document.querySelector(html_element));
+            const element = <div>{courselist}</div>;
+            userroot.render(element);
+        } catch (e) {
+            return e;
+        }    
+    }
+    getCourseRenders();
+    
 }
 export function getStudentCourses(user_id) {
     const api = "http://localhost:5000/getStudentCourses";

@@ -1,7 +1,14 @@
 import Sidebar from "./sidebar";
+import { useLocation } from "react-router-dom";
 import { AssignmentList, createAssignment } from "../assignments_functions";
 
 function TeacherAssignments(){
+    let query = new URLSearchParams(useLocation().search);
+    let id = query.get("id");
+    let course_name = query.get("name");
+    localStorage.setItem('course_id', id);
+    localStorage.setItem('course_name', course_name);
+    
     return (
         <div id="teacherassignments">
             <h2> Assignments </h2>
