@@ -87,7 +87,7 @@ a[href=account]:hover,a[href=dashboard]:hover,a[href=courses]:hover,a[href=\/]:h
 
 
 
-@media screen and (max-width: 571px) {
+@media screen and (max-width: 840px) {
   #navigation{
     position: relative;
     display: flex;
